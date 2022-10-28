@@ -1,13 +1,56 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>WebXXX Hackathon Moscow</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://api-maps.yandex.ru/2.1/?apikey=44ce412e-8f7a-4501-b998-1ebe0a8e4d9f&lang=ru_RU" type="text/javascript"></script>
+    <script type="text/javascript" src="https://unpkg.com/xlsx@0.15.1/dist/xlsx.full.min.js"></script>
+    <link rel='stylesheet' href='css/style.css'>
+    <title>Real Estate Moskow Hack</title>
 </head>
 <body>
+    <div class="wrapper">
+        <header class="header">
 
+        </header>
+        <!-- HEADER END -->
+
+        <main class="main">
+            <input id="input__file" type="file">
+            <form id="form">
+                <input class="email" type="text" name="email" placeholder="Введите email">
+                <input class="password" type="password" name="password" id="password" placeholder="Введите пароль">
+                <button class="button" type="submit">send data</button>
+            </form>
+            <form action="#" method='post' class="table-form">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <td>Местоположение</td>
+                            <td>Количество комнат</td>
+                            <td>Сегмент (Новостройка, современное жилье, старый жилой фонд)</td>
+                            <td>Этажность дома</td>
+                            <td>Материал стен (Кипич, панель, монолит)</td>
+                            <td>Этаж расположения</td>
+                            <td>Площадь квартиры, кв.м</td>
+                            <td>Площадь кухни, кв.м</td>
+                            <td>Наличие балкона/лоджии</td>
+                            <td>Удаленность от станции метро</td>
+                            <td>Состояние (без отделки, муниципальный ремонт, с современная отделка)</td>
+                        </tr>
+                    </thead>
+                </table>
+                <button class="btn_send">Расчитать стоимость</button>
+                <div id="map" style="width: 600px; height: 400px"></div>
+            </main>
+        </form>
+        <!-- MAIN END -->
+
+        <footer class="footer">
+
+        </footer>
+    </div>
+    <script src="script.js"></script>
 </body>
-</html>
+</html> 
