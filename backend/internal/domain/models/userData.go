@@ -3,7 +3,6 @@ package models
 import (
 	"fmt"
 	"github.com/jinzhu/gorm"
-	"github.com/victorbej/webxxx-hackathon-moscow/internal/domain/repository"
 	"github.com/victorbej/webxxx-hackathon-moscow/pkg/utils"
 )
 
@@ -40,7 +39,7 @@ func (ut *UserTable) Create() map[string]interface{} {
 		return resp
 	}
 
-	repository.GetDB().Create(ut)
+	GetDB().Create(ut)
 
 	resp := utils.Message(true, "success")
 	resp["UserTable"] = ut
@@ -50,7 +49,7 @@ func (ut *UserTable) Create() map[string]interface{} {
 func GetUserTable(id uint) *UserTable {
 
 	ut := &UserTable{}
-	err := repository.GetDB().Table("user_tables").Where("id = ?", id).First(ut).Error
+	err := GetDB().Table("user_tables").Where("id = ?", id).First(ut).Error
 	if err != nil {
 		return nil
 	}
@@ -60,7 +59,7 @@ func GetUserTable(id uint) *UserTable {
 func GetUserTables(user uint) []*UserTable {
 
 	ut := make([]*UserTable, 0)
-	err := repository.GetDB().Table("user_tables").Where("user_id = ?", user).Find(&ut).Error
+	err := GetDB().Table("user_tables").Where("user_id = ?", user).Find(&ut).Error
 	if err != nil {
 		fmt.Println(err)
 		return nil
