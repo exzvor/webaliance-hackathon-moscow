@@ -112,25 +112,57 @@ h6 {
 .table {
   border-spacing: 0px;
   border: 1px solid rgb(247, 247, 247);
+  table-layout: auto;
+  width: 150px;
+  justify-content: left;
 }
 
 .table thead {
-  background: #ccc;
-  color: #000;
+  color: #ffffff;
+  font-weight: normal;
+  background-color: #8f8f8f;
+
+  text-align: left;
+  box-sizing: border-box;
 }
 
-.table thead td {
-  border: 1px solid #000;
+.table thead tr td {
+  padding: 5px;
+  border: solid 1px #d8d8d8;
+  border-left: 0;
+  border-right: 0;
+  white-space: nowrap;
+  border-collapse: collapse;
 }
 
-.table tbody td {
-  border: 1px solid #000;
+.table tbody tr td {
+  background-color: whitesmoke;
+  border: solid 1px whitesmoke;
+  border-left: none;
+  border-right: none;
+  text-align: left;
+  padding: 3px;
+  box-sizing: border-box;
 }
 
 .table-form input:focus {
-  background: #000;
-  color: #fff;
+  background: rgb(156, 142, 209);
+  color: rgb(0, 0, 0);
 }
+
+.table-form input {
+  width: 100%;
+}
+
+.params span {
+  font-size: 0.9rem;
+}
+
+/* 
+.checkbox {
+  width: 25px;
+  height: 25px;
+} */
 
 .footer {
   -webkit-box-flex: 0;
