@@ -3,7 +3,6 @@ package models
 import (
 	"github.com/dgrijalva/jwt-go"
 	"github.com/jinzhu/gorm"
-	"github.com/victorbej/webxxx-hackathon-moscow/internal/domain/repository"
 	"github.com/victorbej/webxxx-hackathon-moscow/pkg/utils"
 	"golang.org/x/crypto/bcrypt"
 	"os"
@@ -41,7 +40,7 @@ func (account *Account) Validate() (map[string]interface{}, bool) {
 	temp := &Account{}
 
 	//проверка на наличие ошибок и дубликатов электронных писем
-	err := repository.GetDB().Table("accounts").Where("email = ?", account.Email).First(temp).Error
+	err := GetDB().Table("accounts").Where("email = ?", account.Email).First(temp).Error
 	if err != nil && err != gorm.ErrRecordNotFound {
 		return utils.Message(false, "Connection error. Please retry"), false
 	}
@@ -61,7 +60,7 @@ func (account *Account) Create() map[string]interface{} {
 	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(account.Password), bcrypt.DefaultCost)
 	account.Password = string(hashedPassword)
 
-	repository.GetDB().Create(account)
+	GetDB().Create(account)
 
 	if account.ID <= 0 {
 		return utils.Message(false, "Failed to create account, connection error.")
@@ -83,7 +82,7 @@ func (account *Account) Create() map[string]interface{} {
 func Login(email, password string) map[string]interface{} {
 
 	account := &Account{}
-	err := repository.GetDB().Table("accounts").Where("email = ?", email).First(account).Error
+	err := GetDB().Table("accounts").Where("email = ?", email).First(account).Error
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return utils.Message(false, "Email address not found")
@@ -112,7 +111,7 @@ func Login(email, password string) map[string]interface{} {
 func GetUser(u uint) *Account {
 
 	acc := &Account{}
-	repository.GetDB().Table("accounts").Where("id = ?", u).First(acc)
+	GetDB().Table("accounts").Where("id = ?", u).First(acc)
 	if acc.Email == "" { //Пользователь не найден!
 		return nil
 	}
