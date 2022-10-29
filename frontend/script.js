@@ -1,7 +1,13 @@
 'use strict'
 
 const form = document.getElementById('form');
-const url = "https://hack-auth.herokuapp.com/api/user/login";
+const btnMakeCalculation = document.querySelector('.btn_calculate');
+
+const newUserURL = "https://hack-auth.herokuapp.com/api/user/new";
+const loginURL = "https://hack-auth.herokuapp.com/api/user/login";
+const createNewTableURL = "https://hack-auth.herokuapp.com/api/table/new";
+const getTablesURL = "https://hack-auth.herokuapp.com/api/me/tables";
+
 const arrayOfCells = [];
 const arrayOfRows = [];
 
@@ -21,7 +27,7 @@ class Table {
         this.counter = counter;
     }
     makeRow() {
-        const row = `<tr id='${this.counter++}'><td><input type=checkbox></td><td class="location"><input type='text' value='${this.location}'></td><td class="rooms"><input type='text' value='${this.rooms}'></td><td class="age"><input type='text' value='${this.age}'></td><td class="floors"><input type='text' value='${this.floors}'></td><td class="material"><input type='text' value='${this.material}'></td><td class="currentFloor"><input type='text' value='${this.currentFloor}'></td><td class="squareFlat"><input type='text' value='${this.squareFlat}'></td><td class="squareKitchen"><input type='text' value='${this.squareKitchen}'></td><td class="balcony"><input type='text' value='${this.balcony}'></td><td class="subway"><input type='text' value='${this.subway}'></td><td class="condition"><input type='text' value='${this.condition}'></td></tr>`;
+        const row = `<tr id='${this.counter++}'><td class="checkbox"><input type=checkbox></td><td class="location"><input type='text' value='${this.location}'></td><td class="rooms"><input type='text' value='${this.rooms}'></td><td class="age"><input type='text' value='${this.age}'></td><td class="floors"><input type='text' value='${this.floors}'></td><td class="material"><input type='text' value='${this.material}'></td><td class="currentFloor"><input type='text' value='${this.currentFloor}'></td><td class="squareFlat"><input type='text' value='${this.squareFlat}'></td><td class="squareKitchen"><input type='text' value='${this.squareKitchen}'></td><td class="balcony"><input type='text' value='${this.balcony}'></td><td class="subway"><input type='text' value='${this.subway}'></td><td class="condition"><input type='text' value='${this.condition}'></td></tr>`;
         const table = document.querySelector('.tbody');
         table.insertAdjacentHTML('beforeend', row);
     };
@@ -30,7 +36,6 @@ class Table {
     };
 }
 
-//
 function fileReader(oEvent) {
     const oFile = oEvent.target.files[0];
     const reader = new FileReader();
@@ -172,7 +177,7 @@ function displayMap() {
 }
 ymaps.ready(displayMap);
 
-// Connect to web-server login/pass
+// Connect to web-server login
 form.addEventListener('submit', (e) => {
     e.preventDefault();
 
@@ -180,7 +185,7 @@ form.addEventListener('submit', (e) => {
     const password = document.querySelector(".password").value;
     const body = `{\"email\": \"${email}\", \"password\": \"${password}\"}`;
 
-    fetch(url, {
+    fetch(loginURL, {
         method: "POST",
         body: body,
     })
@@ -192,4 +197,33 @@ form.addEventListener('submit', (e) => {
 // Download and read excel file 
 document.querySelector('#input__file').addEventListener('change', function (e) {
     fileReader(e);
+});
+
+
+btnMakeCalculation.addEventListener('click', (e) => {
+    e.preventDefault();
+    let arr = []
+
+    Array.from(document.querySelectorAll('input[type=checkbox]:checked')).forEach((item => { item.checked === true ? arr.push(item.parentElement.parentElement.id) : null }));
+
+    let raw = "";
+
+    arr.forEach(item => {
+
+        let obj = Array.from(Object.values(arrayOfRows[item]));
+
+        arrayOfRows[item]['balcony'] === 'да' ? arrayOfRows[item]['balcony'] = true : arrayOfRows[item]['balcony'] = false;
+
+        raw = JSON.stringify(arrayOfRows[item]);
+    })
+    console.log(raw);
+
+    let body = raw;
+    fetch(createNewTableURL, {
+        method: "POST",
+        body: body
+    })
+        .then(response => response.text())
+        .then(result => console.log(result))
+        .catch(error => console.log('error', error));
 });
