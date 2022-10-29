@@ -5,7 +5,7 @@ const url = "https://hack-auth.herokuapp.com/api/user/login";
 const arrayOfCells = [];
 
 class Table {
-    constructor(location = "-", rooms = "-", age = "-", floors = "-", material = "-", currentFloor = "-", squareFlat = "-", squareKitchen = "-", balcony = "-", subway = "-", condition = "-") {
+    constructor(location = "-", rooms = "-", age = "-", floors = "-", material = "-", currentFloor = "-", squareFlat = "-", squareKitchen = "-", balcony = "-", subway = "-", condition = "-", counter = 0) {
         this.location = location;
         this.rooms = rooms;
         this.age = age;
@@ -17,9 +17,10 @@ class Table {
         this.balcony = balcony;
         this.subway = subway;
         this.condition = condition;
+        this.counter = counter;
     }
     makeRow() {
-        const row = `<td class="location"><input type='text' value='${this.location}'></td><td class="rooms"><input type='text' value='${this.rooms}'></td><td class="age"><input type='text' value='${this.age}'></td><td class="floors"><input type='text' value='${this.floors}'></td><td class="material"><input type='text' value='${this.material}'></td><td class="currentFloor"><input type='text' value='${this.currentFloor}'></td><td class="squareFlat"><input type='text' value='${this.squareFlat}'></td><td class="squareKitchen"><input type='text' value='${this.squareKitchen}'></td><td class="balcony"><input type='text' value='${this.balcony}'></td><td class="subway"><input type='text' value='${this.subway}'></td><td class="condition"><input type='text' value='${this.condition}'></td>`;
+        const row = `<tr id='${this.counter++}'><td class="location"><input type='text' value='${this.location}'></td><td class="rooms"><input type='text' value='${this.rooms}'></td><td class="age"><input type='text' value='${this.age}'></td><td class="floors"><input type='text' value='${this.floors}'></td><td class="material"><input type='text' value='${this.material}'></td><td class="currentFloor"><input type='text' value='${this.currentFloor}'></td><td class="squareFlat"><input type='text' value='${this.squareFlat}'></td><td class="squareKitchen"><input type='text' value='${this.squareKitchen}'></td><td class="balcony"><input type='text' value='${this.balcony}'></td><td class="subway"><input type='text' value='${this.subway}'></td><td class="condition"><input type='text' value='${this.condition}'></td></tr>`;
         const table = document.querySelector('.table');
         table.insertAdjacentHTML('beforeend', row);
     };
@@ -50,7 +51,7 @@ function getRowsAndDisplay(result) {
     let firstIndex = 0;
     let arr = Array.from(Object.values(result));
     for (let i = 1; i < arr[firstIndex].length; i++) {
-        let table = new Table(arr[0][i][0], arr[0][i][1], arr[0][i][2], arr[0][i][3], arr[0][i][4], arr[0][i][5], arr[0][i][6], arr[0][i][7], arr[0][i][8], arr[0][i][9], arr[0][i][10]);
+        let table = new Table(arr[0][i][0], arr[0][i][1], arr[0][i][2], arr[0][i][3], arr[0][i][4], arr[0][i][5], arr[0][i][6], arr[0][i][7], arr[0][i][8], arr[0][i][9], arr[0][i][10], i);
         table.createTable();
     }
     listenUsersModification();
