@@ -1,0 +1,58 @@
+@import "nullstyle.scss";
+
+$dark : #000;
+$light : #fff;
+$mid : #ccc;
+
+.wrapper {
+	display: flex;
+	flex-direction: column;
+	min-height: 100%;
+}
+
+.header {
+	flex: 0 0 100%;
+}
+
+.main {
+	flex: 1 0 100%;
+}
+
+.email {}
+
+.password {}
+
+.button {}
+
+.table {
+	border-spacing: 0px;
+	border: 1px solid $light;
+
+	thead {
+		background: $mid;
+		color: $dark;
+
+		td {
+			border: 1px solid $dark;
+
+		}
+	}
+
+	tbody {
+		td {
+			border: 1px solid $dark;
+
+		}
+	}
+}
+
+.table-form {
+	input:focus {
+		background: $dark;
+		color: $light
+	}
+}
+
+.footer {
+	flex: 0 0 100%;
+}

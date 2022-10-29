@@ -1,0 +1,171 @@
+* {
+  padding: 0;
+  margin: 0;
+  border: 0;
+}
+
+*,
+*:before,
+*:after {
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+:focus,
+:active {
+  outline: none;
+}
+
+a:focus,
+a:active {
+  outline: none;
+}
+
+nav,
+footer,
+header,
+aside {
+  display: block;
+}
+
+html,
+body {
+  height: 100%;
+  width: 100%;
+  font-size: 100%;
+  line-height: 1;
+  font-size: 14px;
+  -ms-text-size-adjust: 100%;
+  -moz-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+}
+
+input,
+button,
+textarea {
+  font-family: inherit;
+}
+
+input::-ms-clear {
+  display: none;
+}
+
+button {
+  cursor: pointer;
+}
+
+button::-moz-focus-inner {
+  padding: 0;
+  border: 0;
+}
+
+a,
+a:visited {
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: none;
+}
+
+ul li {
+  list-style: none;
+}
+
+img {
+  vertical-align: top;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+.wrapper {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  min-height: 100%;
+}
+
+.header {
+  -webkit-box-flex: 0;
+  -ms-flex: 0 0 100%;
+  flex: 0 0 100%;
+}
+
+.main {
+  -webkit-box-flex: 1;
+  -ms-flex: 1 0 100%;
+  flex: 1 0 100%;
+}
+
+.table {
+  border-spacing: 0px;
+  border: 1px solid rgb(247, 247, 247);
+  table-layout: auto;
+  width: 150px;
+  justify-content: left;
+}
+
+.table thead {
+  color: #ffffff;
+  font-weight: normal;
+  background-color: #8f8f8f;
+
+  text-align: left;
+  box-sizing: border-box;
+}
+
+.table thead tr td {
+  padding: 5px;
+  border: solid 1px #d8d8d8;
+  border-left: 0;
+  border-right: 0;
+  white-space: nowrap;
+  border-collapse: collapse;
+}
+
+.table tbody tr td {
+  background-color: whitesmoke;
+  border: solid 1px whitesmoke;
+  border-left: none;
+  border-right: none;
+  text-align: left;
+  padding: 3px;
+  box-sizing: border-box;
+}
+
+.table-form input:focus {
+  background: rgb(156, 142, 209);
+  color: rgb(0, 0, 0);
+}
+
+.table-form input {
+  width: 100%;
+}
+
+.params span {
+  font-size: 0.9rem;
+}
+
+/* 
+.checkbox {
+  width: 25px;
+  height: 25px;
+} */
+
+.footer {
+  -webkit-box-flex: 0;
+  -ms-flex: 0 0 100%;
+  flex: 0 0 100%;
+}
