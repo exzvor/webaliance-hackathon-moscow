@@ -19,10 +19,23 @@
         <main class="main">
             <input id="input__file" type="file">
             <form id="form">
-                <input class="email" type="text" name="email" placeholder="Введите email">
-                <input class="password" type="password" name="password" id="password" placeholder="Введите пароль">
-                <button class="button" type="submit">send data</button>
+                <input class="email" type="text" name="email" placeholder="Введите email" value="any@mail.ru">
+                <input class="password" type="password" name="password" id="password" placeholder="Введите пароль" value="1234567">
+                <button class="btn btn-senddata" type="submit">Log In</button>
             </form>
+            
+            <form action="/">
+                <label for="dropdown">Выберите количество отображаемых строк:</label>
+                <select id="dropdown" name="dropdown">
+                  <option value="10">10</option>
+                  <option selected value="20">20</option>
+                  <option value="30">30</option>
+                  <option value="40">40</option>
+                </select>
+                <!-- <input type="submit"> -->
+              </form>
+
+
             <form action="#" method='post' class="table-form">
                 <table class="table">
                     <thead>
@@ -44,7 +57,22 @@
                     <tbody class="tbody">
                     </tbody>
                 </table>
-                <button class="btn_calculate">Расчитать стоимость</button>
+                <ul id="pagination">
+                    <!-- <li>1</li> -->
+                    <!-- <li>2</li>
+                    <li>3</li>
+                    <li>4</li>
+                    <li>5</li> -->
+                </ul> 
+                    <!-- <label for="table_radio_3">&laquo; Previous</label>
+                    <label for="table_radio_0" id="table_pager_0">1</label>
+                    <label for="table_radio_1" id="table_pager_1">2</label>
+                    <label for="table_radio_2" id="table_pager_2">3</label>
+                    <label for="table_radio_3" id="table_pager_3">4</label>
+                    <label class="active" for="table_radio_4" id="table_pager_4">5</label>
+                    <label class="disabled" for="table_radio_5">Next &raquo;</label>-->
+                <button class="btn btn-calculate">Расчитать стоимость</button>
+                <button class="btn btn-gettable">Получить таблицу</button>
                 <div id="map" style="width: 600px; height: 400px"></div>
             </main>
         </form>
