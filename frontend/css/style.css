@@ -1,5 +1,5 @@
 * {
-  padding: 0;
+  padding: 5px;
   margin: 0;
   border: 0;
 }
@@ -70,6 +70,12 @@ a:hover {
 
 ul li {
   list-style: none;
+  padding: 2px;
+  display: inline;
+}
+
+ul li:hover {
+  cursor: pointer;
 }
 
 img {
@@ -115,6 +121,10 @@ h6 {
   table-layout: auto;
   width: 150px;
   justify-content: left;
+}
+
+.table tr:hover:not(thead tr) {
+  filter: brightness(0.85);
 }
 
 .table thead {

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./css/style-auth.css">
+    <title>Добро пожаловать</title>
+</head>
+<body>
+    <div class="container">
+
+        <header></header>
+        <main>
+        <div class="auth">
+            <img src="./image/logo.png" width="100px" height="100px" class="logo" alt="logo webaliance">
+            <h2 class="title welcome-text">Авторизация</h2>
+            <form>
+
+                <div class="input">
+                    <div class="input-inner">
+                        <input id="email" type="email" class="input input-email" name="email" autocomplete="username" placeholder="E-mail" value="" pattern="[^@\s]+@[^@\s]+\.[^@\s]+" title="Invalid email address">
+                        <span class="email-error"></span>
+                    </div>
+                </div>
+
+                <div class="input">
+                    <div class="input-inner">
+                        <input id="password" type="password" class="input input-password" name="password" autocomplete="current-password" placeholder="Пароль" value="" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{7,20}$">
+                        <span class="password-error"></span>
+                        <span class="password-eye">
+                            <img alt="password-eye" src="./image/eye.svg">
+                        </span>
+                    </div>
+                </div>
+
+                <div class="submit-button">
+                    <button type="button" class="button-login">Войти</button>
+                    <button type="button" class="button-signup">Регистрация</button>
+                </div>
+
+            </form>
+                <div class="forgot-password">
+                    <a class="forgot-password-link" href="/recover-password-request">Забыли пароль</a>
+                </div>
+        </div>
+        </main>
+        <footer></footer>
+
+    </div>
+    <script>
+        'use strict'
+        const emailField = document.querySelector('.input-email');
+        const passField = document.querySelector('.input-password');
+        email
+        const eye = document.querySelector('.password-eye');
+        eye.addEventListener('click', () => {
+            eye.classList.toggle("password-eye-pressed");
+            const type = passField.getAttribute("type") === "password" ? "text" : "password";
+            passField.setAttribute("type", type);
+        });
+
+        if (emailField.checkValidity()) {
+            emailField.classList.add('text-field__input_valid');
+        } else {
+            emailField.classList.add('text-field__input_invalid');
+            emailField.nextElementSibling.textContent = emailField.validationMessage;
+        }
+
+        if (passField.checkValidity()) {
+            passField.classList.add('text-field__input_valid');
+        } else {
+            passField.classList.add('text-field__input_invalid');
+            passField.nextElementSibling.textContent = passField.validationMessage;
+        }
+
+    </script>
+</body>
+</html>
