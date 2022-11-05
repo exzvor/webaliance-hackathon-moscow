@@ -1,5 +1,10 @@
 'use strict'
 
+import { parseString } from 'xml2js';
+var xml = "<root>Hello xml2js!</root>"
+parseString(xml, function (err, result) {
+    console.dir(result);
+});
 
 
 const modal = document.querySelector('.modal');
@@ -33,9 +38,6 @@ document.addEventListener('keydown', function (e) {
 })
 
 
-
-
-
 const form = document.getElementById('form');
 const btnMakeCalculation = document.querySelector('.btn-calculate');
 const btnGetTable = document.querySelector('.btn-gettable');
@@ -47,7 +49,8 @@ const ul = document.querySelector('#pagination');
 let pagiLi = document.querySelectorAll('#pagination li');
 let liElems = "";
 let ROWS = 20;  // default dropdown menu position
-let token = "Bearer ";
+
+let token = sessionStorage.getItem('key');
 let coordinat = [];
 
 const createNewTableURL = "https://immense-sea-70871.herokuapp.com/https://hack-auth.herokuapp.com/api/table/new";
@@ -84,45 +87,46 @@ class Table {
     };
 }
 
-async function getStations() {
-    const baseUrl = "https://apidata.mos.ru/v1/datasets/1488/rows?api_key=";
-    const apiKey = "5650e2cd63716f4dc8319a168c93b080";
-    const myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json")
+// async function getStations() {
+//     const baseUrl = "https://apidata.mos.ru/v1/datasets/1488/rows?api_key=";
+//     const apiKey = "5650e2cd63716f4dc8319a168c93b080";
+//     const myHeaders = new Headers();
+//     myHeaders.append("Content-Type", "application/json")
 
-    return await fetch(baseUrl + `${apiKey}`, {
-        method: "GET",
-        headers: myHeaders,
-    })
-}
+//     return await fetch(baseUrl + `${apiKey}`, {
+//         method: "GET",
+//         headers: myHeaders,
+//     })
+// }
 
-async function getMetro() {
-    const response = await getStations();
-    const data = await response.json();
+// async function getMetro() {
+//     const response = await getStations();
+//     const data = await response.json();
 
-    const url = "https://suggestions.dadata.ru/suggestions/api/4_1/rs/suggest/metro";
-    const token = "246a794897b8dd2f7655f6167c1f2d9dd05173a6";
+//     const url = "https://suggestions.dadata.ru/suggestions/api/4_1/rs/suggest/metro";
+//     const token = "246a794897b8dd2f7655f6167c1f2d9dd05173a6";
 
-    const options = {
-        method: "POST",
-        mode: "cors",
-        headers: {
-            "Content-Type": "application/json",
-            "Accept": "application/json",
-            "Authorization": "Token " + token
-        },
-    }
+//     const options = {
+//         method: "POST",
+//         mode: "cors",
+//         headers: {
+//             "Content-Type": "application/json",
+//             "Accept": "application/json",
+//             "Authorization": "Token " + token
+//         },
+//     }
 
-    for (let i = 0; i < data.length; i++) {
-        arrayOfSubwayStations.push(data[i]["Cells"]["Station"]);
-        options.body = JSON.stringify({ query: arrayOfSubwayStations[i] })
+//     for (let i = 0; i < data.length; i++) {
+//         arrayOfSubwayStations.push(data[i]["Cells"]["Station"]);
+//         options.body = JSON.stringify({ query: arrayOfSubwayStations[i] })
 
-        await fetch(url, options)
-        .then(response => response.json())
-        .then(result => arrayOfSubwayStations[i] = result)
-        .catch(error => console.log("error", error));
-    }
-}
+//         await fetch(url, options)
+//             .then(response => response.json())
+//             .then(result => arrayOfSubwayStations[i] = result)
+//             .catch(error => console.log("error", error));
+//     }
+// }
+
 
 // getMetro();
 
@@ -167,8 +171,13 @@ function getDistanceBetween(lat1, lon1, lat2, lon2) {
     const x2 = lon2 - lon1;
     const dLon = x2.toRad();
     const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    <<<<<<< HEAD
     Math.cos(lat1.toRad()) * Math.cos(lat2.toRad()) *
     Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    =======
+    Math.cos(lat1.toRad()) * Math.cos(lat2.toRad()) *
+    Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    >>>>>>> main
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     return R * c;
 }
@@ -211,6 +220,10 @@ function getRows(result) {
         arrayOfRows.push(table);
     };
     liElems = Math.ceil(arrayOfRows.length / ROWS);
+    
+    ymaps.ready(displayMap);
+    getMetro();
+
     simEvent(dropdown);
     pagination();
     listenUsersModification();
@@ -244,7 +257,8 @@ function displayMap() {
         zoom: 9
     });
 
-    ymaps.geocode(' Москва, Климентовский переулок 14', {
+
+    ymaps.geocode(arrayOfRows[0]['location'], {
         /**
          * Опции запроса
          * @see https://api.yandex.ru/maps/doc/jsapi/2.1/ref/reference/geocode.xml
@@ -262,10 +276,17 @@ function displayMap() {
             coords = firstGeoObject.geometry.getCoordinates(),
             // Область видимости геообъекта.
             bounds = firstGeoObject.properties.get('boundedBy');
+            <<<<<<< HEAD
             coordinat.push(coords);
             console.log(coordinat);
 
             firstGeoObject.options.set('preset', 'islands#darkBlueDotIconWithCaption');
+            =======
+            coordinat.push(coords);
+            console.log(coordinat);
+
+            firstGeoObject.options.set('preset', 'islands#darkBlueDotIconWithCaption');
+            >>>>>>> main
         // Получаем строку с адресом и выводим в иконке геообъекта.
         firstGeoObject.properties.set('iconCaption', firstGeoObject.getAddressLine());
 
@@ -280,17 +301,28 @@ function displayMap() {
         /**
          * Все данные в виде javascript-объекта.
          */
+
          console.log('Все данные геообъекта: ', firstGeoObject.properties.getAll());
 
          var myPlacemark = new ymaps.Placemark(coords, {
+
             iconContent: 'моя метка',
             balloonContent: 'Содержимое балуна <strong>моей метки</strong>'
         }, {
             preset: 'islands#violetStretchyIcon'
         });
 
+
          myMap.geoObjects.add(myPlacemark);
      });
+}
+
+
+function getMetro() {
+    fetch(`https://geocode-maps.yandex.ru/1.x/?apikey=44ce412e-8f7a-4501-b998-1ebe0a8e4d9f&geocode=${coordinat[0]},${coordinat[1]}&kind=metro&results=1`, {
+        method: "GET",
+    }).then(response => response.text())
+    .then(result => console.log(result));
 }
 
 // Connect to web-server login
@@ -305,9 +337,11 @@ form.addEventListener('submit', (e) => {
             method: "POST",
             body: body,
         })
+
         .then(response => response.json())
         .then(result => token += result.account.token)
         .catch(error => console.log('error', error));
+
         console.log('you are succesfully logged in');
     } else console.log('you are logged in already');
 });
@@ -349,6 +383,7 @@ btnMakeCalculation.addEventListener('click', (e) => {
         headers: myHeaders,
         body: body
     })
+
     .then(response => response.text())
     .then(result => console.log(result))
     .catch(error => console.log('error', error));
@@ -397,6 +432,7 @@ function pagination() {
             //make the current item active
             e.target.classList.add('active');
 
+            
         })
     }
 }
@@ -412,8 +448,10 @@ btnGetTable.addEventListener('click', (e) => {
         method: "GET",
         headers: myHeaders,
     }).then(response => response.text())
+
     .then(result => console.log(result))
     .catch(error => console.log('error', error));
+    
 })
 
 // fetch("./subways.json")
