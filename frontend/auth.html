@@ -49,16 +49,11 @@
 
     </div>
     <script>
-
         'use strict'
-
-        const newUserURL = "https://hack-auth.herokuapp.com/api/user/new";
-        const loginURL = "https://hack-auth.herokuapp.com/api/user/login";
-        const btnLogin = document.querySelector('.button-login');
         const emailField = document.querySelector('.input-email');
         const passField = document.querySelector('.input-password');
+        email
         const eye = document.querySelector('.password-eye');
-        let token = "Bearer ";
         eye.addEventListener('click', () => {
             eye.classList.toggle("password-eye-pressed");
             const type = passField.getAttribute("type") === "password" ? "text" : "password";
@@ -79,36 +74,6 @@
             passField.nextElementSibling.textContent = passField.validationMessage;
         }
 
-        let userNotFound = new Error("Пользователь с таким логином или паролем не найден");
-
-        btnLogin.addEventListener('click', (e)=> {
-            e.preventDefault();
-            const body = `{\"email\": \"${emailField.value}\", \"password\": \"${passField.value}\"}`;
-            try {
-                fetch(loginURL, {
-                    method: "POST",
-                    body: body,
-                })
-                    .then(response => response.json())
-                    .then(result => {
-                        console.log(result);
-                        try {
-                            if (result.status === false) {
-                                
-                                throw userNotFound;
-                            } else {
-                                token += result.account.token;
-                                window.location = "./main.html";
-                            }
-                        } catch (error) {
-                            console.log(error);
-                        }
-                    })
-            } catch (error) {
-                console.log("error happen" , error);
-            }
-        })
-        
     </script>
 </body>
 </html>
