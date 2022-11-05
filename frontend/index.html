@@ -4,84 +4,168 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://api-maps.yandex.ru/2.1/?apikey=44ce412e-8f7a-4501-b998-1ebe0a8e4d9f&lang=ru_RU" type="text/javascript"></script>
-    <script type="text/javascript" src="https://unpkg.com/xlsx@0.15.1/dist/xlsx.full.min.js"></script>
-    <link rel='stylesheet' href='css/style.css'>
-    <title>Real Estate Moskow Hack</title>
+    <link rel="stylesheet" href="style-auth.css">
+    <title>Добро пожаловать</title>
 </head>
 <body>
-    <div class="wrapper">
-        <header class="header">
+    <div class="container">
 
-        </header>
-        <!-- HEADER END -->
+        <header></header>
+        <main>
+            <div class="modal registration hidden">
+                <button class="close-modal">&times;</button>
+                <p>Укажите ваш email:</p>
+                <input id="registration-email" type="email" class="registration-email" name="email" autocomplete="username" placeholder="E-mail" value="" pattern="[^@\s]+@[^@\s]+\.[^@\s]+" title="Invalid email address">
+                <p>Укажите ваш пароль:</p>
+                <input id="registration-password" type="password" class="registration-password" name="password" autocomplete="current-password" placeholder="Пароль" value="" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{7,20}$">
+                <button class="btn-confirm-registration">Подтвердить</button>
+            </div>
+            <div class="overlay hidden"></div>
+        
+            <div class="auth">
+            <img src="./image/logo.png" width="100px" height="100px" class="logo" alt="logo webaliance">
+            <h2 class="title welcome-text">Авторизация</h2>
+            <form>
+                <div class="show-error-message"></div>
+                <div class="input">
+                    <div class="input-inner">
+                        <input id="email" type="email" class="input input-email" name="email" autocomplete="username" placeholder="E-mail" value="" pattern="[^@\s]+@[^@\s]+\.[^@\s]+" title="Invalid email address">
+                        <span class="email-error"></span>
+                    </div>
+                </div>
 
-        <main class="main">
-            <input id="input__file" type="file">
-            <form id="form">
-                <input class="email" type="text" name="email" placeholder="Введите email" value="any@mail.ru">
-                <input class="password" type="password" name="password" id="password" placeholder="Введите пароль" value="1234567">
-                <button class="btn btn-senddata" type="submit">Log In</button>
+                <div class="input">
+                    <div class="input-inner">
+                        <input id="password" type="password" class="input input-password" name="password" autocomplete="current-password" placeholder="Пароль" value="" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{7,20}$">
+                        <span class="password-error"></span>
+                        <span class="password-eye">
+                            <img alt="password-eye" src="./image/eye.svg">
+                        </span>
+                    </div>
+                </div>
+
+                <div class="submit-button">
+                    <button type="button" class="button-login">Войти</button>
+                    <button type="button" class="button-signup">Регистрация</button>
+                </div>
+
             </form>
-            
-            <form action="/">
-                <label for="dropdown">Выберите количество отображаемых строк:</label>
-                <select id="dropdown" name="dropdown">
-                  <option value="10">10</option>
-                  <option selected value="20">20</option>
-                  <option value="30">30</option>
-                  <option value="40">40</option>
-                </select>
-                <!-- <input type="submit"> -->
-              </form>
+                <div class="forgot-password">
+                    <a class="forgot-password-link" href="/recover-password-request">Забыли пароль</a>
+                </div>
+        </div>
+        </main>
+        <footer></footer>
 
-
-            <form action="#" method='post' class="table-form">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <td class ="checkbox"></td>
-                            <td>Местоположение</td>
-                            <td>Количество<br>комнат</td>
-                            <td>Сегмент</td>
-                            <td>Этажность<br>дома</td>
-                            <td>Материал стен<br>(<span class="params">кирпич, панель, монолит</span>)</td>
-                            <td>Этаж<br>расположения</td>
-                            <td>Площадь квартиры<br>кв.м</td>
-                            <td>Площадь кухни<br>кв.м</td>
-                            <td>Наличие<br>балкона/лоджии</td>
-                            <td>Удаленность<br>от станции метро</td>
-                            <td>Состояние<br>(<span class="params">без отделки,муниципальный ремонт,<br>с современная отделка</span>)</td>
-                        </tr>
-                    </thead>
-                    <tbody class="tbody">
-                    </tbody>
-                </table>
-                <ul id="pagination">
-                    <!-- <li>1</li> -->
-                    <!-- <li>2</li>
-                    <li>3</li>
-                    <li>4</li>
-                    <li>5</li> -->
-                </ul> 
-                    <!-- <label for="table_radio_3">&laquo; Previous</label>
-                    <label for="table_radio_0" id="table_pager_0">1</label>
-                    <label for="table_radio_1" id="table_pager_1">2</label>
-                    <label for="table_radio_2" id="table_pager_2">3</label>
-                    <label for="table_radio_3" id="table_pager_3">4</label>
-                    <label class="active" for="table_radio_4" id="table_pager_4">5</label>
-                    <label class="disabled" for="table_radio_5">Next &raquo;</label>-->
-                <button class="btn btn-calculate">Расчитать стоимость</button>
-                <button class="btn btn-gettable">Получить таблицу</button>
-                <div id="map" style="width: 600px; height: 400px"></div>
-            </main>
-        </form>
-        <!-- MAIN END -->
-
-        <footer class="footer">
-
-        </footer>
     </div>
-    <script src="script.js"></script>
+    <script>
+
+        'use strict'
+
+        const newUserURL = "https://hack-auth.herokuapp.com/api/user/new";
+        const loginURL = "https://hack-auth.herokuapp.com/api/user/login";
+        const btnLogin = document.querySelector('.button-login');
+        const emailReg = document.querySelector('.registration-email');
+        const passReg = document.querySelector('.registration-password')
+        const emailField = document.querySelector('.input-email');
+        const passField = document.querySelector('.input-password');
+        const eye = document.querySelector('.password-eye');
+        let token = "Bearer ";
+
+        eye.addEventListener('click', () => {
+            eye.classList.toggle("password-eye-pressed");
+            const type = passField.getAttribute("type") === "password" ? "text" : "password";
+            passField.setAttribute("type", type);
+        });
+
+        if (emailField.checkValidity()) {
+            emailField.classList.add('text-field__input_valid');
+        } else {
+            emailField.classList.add('text-field__input_invalid');
+            emailField.nextElementSibling.textContent = emailField.validationMessage;
+        }
+
+        if (passField.checkValidity()) {
+            passField.classList.add('text-field__input_valid');
+        } else {
+            passField.classList.add('text-field__input_invalid');
+            passField.nextElementSibling.textContent = passField.validationMessage;
+        }
+
+        let userNotFound = new Error("Пользователь с таким логином или паролем не найден");
+
+        btnLogin.addEventListener('click', (e)=> {
+            e.preventDefault();
+            const body = `{\"email\": \"${emailField.value}\", \"password\": \"${passField.value}\"}`;
+            try {
+                fetch(loginURL, {
+                    method: "POST",
+                    body: body,
+                })
+                    .then(response => response.json())
+                    .then(result => {
+                        // console.log(result);
+                        try {
+                            if (result.status === false) {
+                                showErrMsg.textContent = userNotFound;
+                                throw userNotFound;
+                            } else {
+                                token += result.account.token;
+                                sessionStorage.setItem('key', token);
+                                window.location = "./main.html";
+                            }
+                        } catch (error) {
+                            console.log(error);
+                        }
+                    })
+            } catch (error) {
+                console.log("error happen" , error);
+            }
+        });
+        
+        const modal = document.querySelector('.modal');
+        const overlay = document.querySelector('.overlay');
+        const btnCloseModal = document.querySelector('.close-modal');
+        const btnRegistration = document.querySelector('.button-signup');
+        const btnConfirmReg = document.querySelector('.btn-confirm-registration');
+
+        const closeModal = function () {
+            modal.classList.add('hidden');
+            overlay.classList.add('hidden');
+        };
+
+        const openModal = function () {
+            console.log("Button clicked");
+            modal.classList.remove('hidden');
+            overlay.classList.remove('hidden');
+        }
+
+        btnRegistration.addEventListener('click', openModal);
+
+        btnCloseModal.addEventListener('click', closeModal);
+        overlay.addEventListener('click', closeModal);
+
+        btnConfirmReg.addEventListener('click', (e)=> {
+            e.preventDefault();
+            const body = `{\"email\": \"${emailReg.value}\", \"password\": \"${passReg.value}\"}`;
+            try {
+                fetch(newUserURL, {
+                    method: "POST",
+                    body: body,
+                })
+                    .then(response => response.json())
+                    .then(result => console.log(result));
+        }catch(error){
+            console.log(error);
+        }});
+
+        document.addEventListener('keydown', function (e) {
+
+            if (e.key === "Escape" && !modal.classList.contains('hidden')) {
+                closeModal();
+            }
+        })
+
+    </script>
 </body>
-</html> 
+</html>

@@ -1,4 +1,45 @@
 'use strict'
+// import { xml2json } from 'xml-js';
+
+// var xml =
+//     '<?xml version="1.0" encoding="utf-8"?>' +
+//     '<note importance="high" logged="true">' +
+//     '    <title>Happy</title>' +
+//     '    <todo>Work</todo>' +
+//     '    <todo>Play</todo>' +
+//     '</note>';
+// var result1 = xml2json(xml, { compact: true, spaces: 4 });
+// var result2 = xml2json(xml, { compact: false, spaces: 4 });
+// console.log(result1, '\n', result2);
+
+const modal = document.querySelector('.modal');
+const overlay = document.querySelector('.overlay');
+const btnCloseModal = document.querySelector('.close-modal');
+const btnsShowModal = document.querySelectorAll('.show-modal');
+
+const closeModal = function () {
+    modal.classList.add('hidden');
+    overlay.classList.add('hidden');
+};
+
+const openModal = function () {
+    console.log("Button clicked");
+    modal.classList.remove('hidden');
+    overlay.classList.remove('hidden');
+}
+
+for (let i = 0; i < btnsShowModal.length; i++)
+    btnsShowModal[i].addEventListener('click', openModal);
+
+btnCloseModal.addEventListener('click', closeModal);
+overlay.addEventListener('click', closeModal);
+
+document.addEventListener('keydown', function (e) {
+
+    if (e.key === "Escape" && !modal.classList.contains('hidden')) {
+        closeModal();
+    }
+})
 
 const form = document.getElementById('form');
 const btnMakeCalculation = document.querySelector('.btn-calculate');
@@ -11,13 +52,13 @@ const ul = document.querySelector('#pagination');
 let pagiLi = document.querySelectorAll('#pagination li');
 let liElems = "";
 let ROWS = 20;  // default dropdown menu position
-let token = "Bearer ";
+let token = sessionStorage.getItem('key');
+let coordinat = [];
 
-const newUserURL = "https://hack-auth.herokuapp.com/api/user/new";
-const loginURL = "https://hack-auth.herokuapp.com/api/user/login";
 const createNewTableURL = "https://immense-sea-70871.herokuapp.com/https://hack-auth.herokuapp.com/api/table/new";
 const getTablesURL = "https://immense-sea-70871.herokuapp.com/https://hack-auth.herokuapp.com/api/me/tables";
 
+let arrayOfSubwayStations = [];
 const arrayOfCells = [];
 const arrayOfRows = [];
 
@@ -48,6 +89,95 @@ class Table {
     };
 }
 
+// async function getStations() {
+//     const baseUrl = "https://apidata.mos.ru/v1/datasets/1488/rows?api_key=";
+//     const apiKey = "5650e2cd63716f4dc8319a168c93b080";
+//     const myHeaders = new Headers();
+//     myHeaders.append("Content-Type", "application/json")
+
+//     return await fetch(baseUrl + `${apiKey}`, {
+//         method: "GET",
+//         headers: myHeaders,
+//     })
+// }
+
+// async function getMetro() {
+//     const response = await getStations();
+//     const data = await response.json();
+
+//     const url = "https://suggestions.dadata.ru/suggestions/api/4_1/rs/suggest/metro";
+//     const token = "246a794897b8dd2f7655f6167c1f2d9dd05173a6";
+
+//     const options = {
+//         method: "POST",
+//         mode: "cors",
+//         headers: {
+//             "Content-Type": "application/json",
+//             "Accept": "application/json",
+//             "Authorization": "Token " + token
+//         },
+//     }
+
+//     for (let i = 0; i < data.length; i++) {
+//         arrayOfSubwayStations.push(data[i]["Cells"]["Station"]);
+//         options.body = JSON.stringify({ query: arrayOfSubwayStations[i] })
+
+//         await fetch(url, options)
+//             .then(response => response.json())
+//             .then(result => arrayOfSubwayStations[i] = result)
+//             .catch(error => console.log("error", error));
+//     }
+// }
+
+// getMetro();
+
+function addRemoteness() {
+    for (let i = 0; i < arrayOfRows.length; i++) {
+        for (let j = 0; j < arrayOfSubwayStations[i]["suggestions"].length; j++) {
+            let lon = arrayOfSubwayStations[i]["suggestions"][j]["data"]["geo_lon"];
+            let lat = arrayOfSubwayStations[i]["suggestions"][j]["data"]["geo_lat"];
+            arrayOfSubwayStations[i]["suggestions"][j]["data"]["remoteness"] = getDistanceBetween(lat, lon, coordinat[0][0], coordinat[0][1]);
+        }
+    }
+}
+
+function findNearest() {
+    debugger
+    let min = null;
+    let obj = {};
+    for (let i = 0; i < arrayOfRows.length; i++) {
+        for (let j = 0; j < arrayOfSubwayStations[i]["suggestions"].length; j++) {
+            if (arrayOfSubwayStations[i]["suggestions"][j]["data"]["remoteness"] < arrayOfSubwayStations[i]["suggestions"][j + 1]?.["data"]["remoteness"] && !min) {
+                min = arrayOfSubwayStations[i]["suggestions"][j]["data"]["remoteness"];
+            } if (arrayOfSubwayStations[i]["suggestions"][j]["data"]["remoteness"] < arrayOfSubwayStations[i + 1]["suggestions"][j]?.["data"]["remoteness"] && !min) {
+                min = arrayOfSubwayStations[i]["suggestions"][j]["data"]["remoteness"];
+            } else if (min > arrayOfSubwayStations[i]["suggestions"][j]["data"]["remoteness"]) {
+                min = arrayOfSubwayStations[i]["suggestions"][j]["data"]["remoteness"];
+                obj = arrayOfSubwayStations[i]["suggestions"][j]["data"];
+            }
+        }
+    }
+    return obj;
+}
+
+Number.prototype.toRad = function () {
+    return this * Math.PI / 180;
+}
+
+function getDistanceBetween(lat1, lon1, lat2, lon2) {
+
+    const R = 6371; // km
+    const x1 = lat2 - lat1;
+    const dLat = x1.toRad();
+    const x2 = lon2 - lon1;
+    const dLon = x2.toRad();
+    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(lat1.toRad()) * Math.cos(lat2.toRad()) *
+        Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c;
+}
+
 function fileReader(oEvent) {
     const oFile = oEvent.target.files[0];
     const reader = new FileReader();
@@ -63,11 +193,16 @@ function fileReader(oEvent) {
             if (roa.length) result[sheetName] = roa;
         });
         getRows(result);
+        // addRemoteness();
+        // console.log(findNearest());
     };
     reader.readAsArrayBuffer(oFile);
 }
 
 function displayTable() {
+    if (arrayOfRows.length < ROWS) {
+        ROWS = arrayOfRows.length;
+    }
     for (let i = 0; i < ROWS; i++) {
         arrayOfRows[i].makeRow();
     }
@@ -81,6 +216,8 @@ function getRows(result) {
         arrayOfRows.push(table);
     };
     liElems = Math.ceil(arrayOfRows.length / ROWS);
+    ymaps.ready(displayMap);
+    getMetro();
     simEvent(dropdown);
     pagination();
     listenUsersModification();
@@ -107,14 +244,13 @@ function listenUsersModification() {
     }));
 }
 
-
 function displayMap() {
     var myMap = new ymaps.Map('map', {
         center: [55.753994, 37.622093],
         zoom: 9
     });
 
-    ymaps.geocode('Ласинаостровкая ул., вл. 43', {
+    ymaps.geocode(arrayOfRows[0]['location'], {
         /**
          * Опции запроса
          * @see https://api.yandex.ru/maps/doc/jsapi/2.1/ref/reference/geocode.xml
@@ -132,6 +268,8 @@ function displayMap() {
             coords = firstGeoObject.geometry.getCoordinates(),
             // Область видимости геообъекта.
             bounds = firstGeoObject.properties.get('boundedBy');
+        coordinat.push(coords);
+        console.log(coordinat);
 
         firstGeoObject.options.set('preset', 'islands#darkBlueDotIconWithCaption');
         // Получаем строку с адресом и выводим в иконке геообъекта.
@@ -149,42 +287,6 @@ function displayMap() {
          * Все данные в виде javascript-объекта.
          */
         console.log('Все данные геообъекта: ', firstGeoObject.properties.getAll());
-        /**
-         * Метаданные запроса и ответа геокодера.
-         * @see https://api.yandex.ru/maps/doc/geocoder/desc/reference/GeocoderResponseMetaData.xml
-         */
-        // console.log('Метаданные ответа геокодера: ', res.metaData);
-        /**
-         * Метаданные геокодера, возвращаемые для найденного объекта.
-         * @see https://api.yandex.ru/maps/doc/geocoder/desc/reference/GeocoderMetaData.xml
-         */
-        // console.log('Метаданные геокодера: ', firstGeoObject.properties.get('metaDataProperty.GeocoderMetaData'));
-        /**
-         * Точность ответа (precision) возвращается только для домов.
-         * @see https://api.yandex.ru/maps/doc/geocoder/desc/reference/precision.xml
-         */
-        // console.log('precision', firstGeoObject.properties.get('metaDataProperty.GeocoderMetaData.precision'));
-        /**
-         * Тип найденного объекта (kind).
-         * @see https://api.yandex.ru/maps/doc/geocoder/desc/reference/kind.xml
-         */
-        // console.log('Тип геообъекта: %s', firstGeoObject.properties.get('metaDataProperty.GeocoderMetaData.kind'));
-        // console.log('Название объекта: %s', firstGeoObject.properties.get('name'));
-        // console.log('Описание объекта: %s', firstGeoObject.properties.get('description'));
-        // console.log('Полное описание объекта: %s', firstGeoObject.properties.get('text'));
-        /**
-        * Прямые методы для работы с результатами геокодирования.
-        * @see https://tech.yandex.ru/maps/doc/jsapi/2.1/ref/reference/GeocodeResult-docpage/#getAddressLine
-        */
-        // console.log('\nГосударство: %s', firstGeoObject.getCountry());
-        // console.log('Населенный пункт: %s', firstGeoObject.getLocalities().join(', '));
-        // console.log('Адрес объекта: %s', firstGeoObject.getAddressLine());
-        // console.log('Наименование здания: %s', firstGeoObject.getPremise() || '-');
-        // console.log('Номер здания: %s', firstGeoObject.getPremiseNumber() || '-');
-
-        /**
-         * Если нужно добавить по найденным геокодером координатам метку со своими стилями и контентом балуна, создаем новую метку по координатам найденной и добавляем ее на карту вместо найденной.
-         */
 
         var myPlacemark = new ymaps.Placemark(coords, {
             iconContent: 'моя метка',
@@ -196,7 +298,14 @@ function displayMap() {
         myMap.geoObjects.add(myPlacemark);
     });
 }
-ymaps.ready(displayMap);
+
+
+function getMetro() {
+    fetch(`https://geocode-maps.yandex.ru/1.x/?apikey=44ce412e-8f7a-4501-b998-1ebe0a8e4d9f&geocode=${coordinat[0]},${coordinat[1]}&kind=metro&results=1`, {
+        method: "GET",
+    }).then(response => response.text())
+        .then(result => console.log(result));
+}
 
 // Connect to web-server login
 form.addEventListener('submit', (e) => {
@@ -237,13 +346,13 @@ btnMakeCalculation.addEventListener('click', (e) => {
 
     Array.from(document.querySelectorAll('input[type=checkbox]:checked')).forEach((item => { item.checked === true ? arr.push(item.parentElement.parentElement.id) : null }));
 
-    let body = "";
+    let raw = "";
 
     arr.forEach(item => {
 
         arrayOfRows[item]['balcony'] === 'да' ? arrayOfRows[item]['balcony'] = true : arrayOfRows[item]['balcony'] = false;
 
-        body = JSON.stringify(arrayOfRows[item]);
+        raw = JSON.stringify(arrayOfRows[item]);
     })
     let myHeaders = new Headers();
     myHeaders.append("Authorization", token);
@@ -265,7 +374,6 @@ function simEvent(element) {
 }
 
 dropdown.addEventListener('change', () => {
-    console.log('send request to get table')
     dropdown.options.value != 20 ? ROWS = dropdown.value : ROWS = 20;
     liElems = Math.ceil(arrayOfRows.length / ROWS);
     tbody.innerHTML = "";
@@ -311,3 +419,11 @@ btnGetTable.addEventListener('click', (e) => {
         .then(result => console.log(result))
         .catch(error => console.log('error', error));
 })
+
+// fetch("./subways.json")
+//     .then(response => response.json())
+//     .then(json => {
+//         arrayOfSubwayStations = Array.from(json);
+//     })
+//     .catch(error => console.log(error));
+
