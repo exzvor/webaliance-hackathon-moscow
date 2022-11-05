@@ -6,49 +6,70 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script type="text/javascript" src="https://api-maps.yandex.ru/2.1/?apikey=44ce412e-8f7a-4501-b998-1ebe0a8e4d9f&lang=ru_RU"></script>
     <script type="text/javascript" src="https://unpkg.com/xlsx@0.15.1/dist/xlsx.full.min.js"></script>
-    <link rel='stylesheet' href='css/style.css'>
+    <script type="text/javascript" src="https://unpkg.com/browse/xml-js@1.6.11/lib/index.js"></script>
+    <link rel='stylesheet' href='style.css'>
     <title>Real Estate Moskow Hack</title>
 </head>
 <body>
     <div class="wrapper">
-        <header class="header">
-        
+        <header class="pop-up">
             <div class="modal">
               <button class="close-modal">&times;</button>
-              <h1>Прежде чем начать...</h1>
-              <p>Загрузите пожалуйста Ваш файл в формате .xls или .xlsx. </p>
-
+              <div class="modal__title">Прежде чем начать...</div>
+              <div class="modal__desc">Загрузите пожалуйста Ваш файл в формате .xls или .xlsx. </div>
               <label class="input__file" for="input__file">
                 Выберите таблицу
                 <input id="input__file" type="file">
-              </label>
+            </label>
+        </div>
+        <div class="overlay"></div>
+    </header>
 
+
+    <div class="header">
+       <div class="container">
+        <div class="header__body">
+            <div class="header__logo">
+                WEBAliance
             </div>
-            <div class="overlay"></div>
+            <ul class="header__list">
 
+                <li>
+                    <a href="auth.html" class="header__link-auth header__link">Войти</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<!-- HEADER END -->
 
-        </header>
-        <!-- HEADER END -->
+<main class="main">
+    <div class="container">
+        <div class="table-btn btn"></div>
+        <div class="table__pop-up">
+            <div class="container">
+                <label class="input__file" for="input__file">
+                    Загрузить файл
+                    <input id="input__file" type="file">
+                </label>
+                <form id="form" class='' style='display: none;'>
+                    <input class="email" type="text" name="email" placeholder="Введите email" value="any@mail.ru">
+                    <input class="password" type="password" name="password" id="password" placeholder="Введите пароль" value="1234567">
+                    <button class="btn btn-senddata" type="submit">Log In</button>
+                </form>
+                <div class="table__dropdown">
+                    <form action="/">
+                        <label for="dropdown">Выберите количество отображаемых строк:</label>
+                        <select id="dropdown" name="dropdown">
+                          <option value="10">10</option>
+                          <option selected value="20">20</option>
+                          <option value="30">50</option>
+                          <option value="40">100</option>
+                      </select>
+                  </form>
+              </div>
 
-        <main class="main">
-            <form id="form">
-                <input class="email" type="text" name="email" placeholder="Введите email" value="any@mail.ru">
-                <input class="password" type="password" name="password" id="password" placeholder="Введите пароль" value="1234567">
-                <button class="btn btn-senddata" type="submit">Log In</button>
-            </form>
-            
-            <form action="/">
-                <label for="dropdown">Выберите количество отображаемых строк:</label>
-                <select id="dropdown" name="dropdown">
-                  <option value="10">10</option>
-                  <option selected value="20">20</option>
-                  <option value="30">30</option>
-                  <option value="40">40</option>
-                </select>
-              </form>
-
-
-            <form action="#" method='post' class="table-form">
+              <form action="#" method='post' class="table-form">
                 <table class="table">
                     <thead>
                         <tr>
@@ -61,28 +82,38 @@
                             <td>Этаж<br>расположения</td>
                             <td>Площадь квартиры<br>кв.м</td>
                             <td>Площадь кухни<br>кв.м</td>
-                            <td>Наличие<br>балкона/лоджии</td>
+                            <td>Наличие<br>балкона/<br>лоджии</td>
                             <td>Удаленность<br>от станции метро</td>
-                            <td>Состояние<br>(<span class="params">без отделки,муниципальный ремонт,<br>современная отделка</span>)</td>
-                            <td>Рыночная стоимость</td>
+                            <td>Состояние<br>(<span class="params">без отделки,<br>муниципальный ремонт,<br>современная отделка</span>)</td>
+                            <td>Рыночная<br>стоимость</td>
                         </tr>
                     </thead>
                     <tbody class="tbody">
                     </tbody>
                 </table>
             </form>
-                <ul id="pagination">
-                </ul> 
+            <ul id="pagination">
+            </ul> 
+            <div class="result-row">
                 <button class="btn btn-calculate">Расчитать стоимость</button>
                 <button class="btn btn-gettable">Получить таблицу</button>
-                <div id="map" style="width: 300px; height: 200px"></div>
-            </main>
-        <!-- MAIN END -->
-
-        <footer class="footer">
-
-        </footer>
+            </div>
+        </div>
     </div>
-    <script src="script.js"></script>
+
+    <div class="map">
+        <div id="map" ></div>
+    </div>
+
+</div>
+</main>
+<!-- MAIN END -->
+
+
+</div>
+
+
+<script src="script.js"></script>
+<script src='style.js'></script>
 </body>
 </html> 

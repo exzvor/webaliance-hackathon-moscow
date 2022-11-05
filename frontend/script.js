@@ -1,4 +1,16 @@
 'use strict'
+// import { xml2json } from 'xml-js';
+
+// var xml =
+//     '<?xml version="1.0" encoding="utf-8"?>' +
+//     '<note importance="high" logged="true">' +
+//     '    <title>Happy</title>' +
+//     '    <todo>Work</todo>' +
+//     '    <todo>Play</todo>' +
+//     '</note>';
+// var result1 = xml2json(xml, { compact: true, spaces: 4 });
+// var result2 = xml2json(xml, { compact: false, spaces: 4 });
+// console.log(result1, '\n', result2);
 
 const modal = document.querySelector('.modal');
 const overlay = document.querySelector('.overlay');
@@ -29,10 +41,6 @@ document.addEventListener('keydown', function (e) {
     }
 })
 
-
-
-
-
 const form = document.getElementById('form');
 const btnMakeCalculation = document.querySelector('.btn-calculate');
 const btnGetTable = document.querySelector('.btn-gettable');
@@ -44,7 +52,7 @@ const ul = document.querySelector('#pagination');
 let pagiLi = document.querySelectorAll('#pagination li');
 let liElems = "";
 let ROWS = 20;  // default dropdown menu position
-let token = "Bearer ";
+let token = sessionStorage.getItem('key');
 let coordinat = [];
 
 const createNewTableURL = "https://immense-sea-70871.herokuapp.com/https://hack-auth.herokuapp.com/api/table/new";
@@ -81,45 +89,45 @@ class Table {
     };
 }
 
-async function getStations() {
-    const baseUrl = "https://apidata.mos.ru/v1/datasets/1488/rows?api_key=";
-    const apiKey = "5650e2cd63716f4dc8319a168c93b080";
-    const myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json")
+// async function getStations() {
+//     const baseUrl = "https://apidata.mos.ru/v1/datasets/1488/rows?api_key=";
+//     const apiKey = "5650e2cd63716f4dc8319a168c93b080";
+//     const myHeaders = new Headers();
+//     myHeaders.append("Content-Type", "application/json")
 
-    return await fetch(baseUrl + `${apiKey}`, {
-        method: "GET",
-        headers: myHeaders,
-    })
-}
+//     return await fetch(baseUrl + `${apiKey}`, {
+//         method: "GET",
+//         headers: myHeaders,
+//     })
+// }
 
-async function getMetro() {
-    const response = await getStations();
-    const data = await response.json();
+// async function getMetro() {
+//     const response = await getStations();
+//     const data = await response.json();
 
-    const url = "https://suggestions.dadata.ru/suggestions/api/4_1/rs/suggest/metro";
-    const token = "246a794897b8dd2f7655f6167c1f2d9dd05173a6";
+//     const url = "https://suggestions.dadata.ru/suggestions/api/4_1/rs/suggest/metro";
+//     const token = "246a794897b8dd2f7655f6167c1f2d9dd05173a6";
 
-    const options = {
-        method: "POST",
-        mode: "cors",
-        headers: {
-            "Content-Type": "application/json",
-            "Accept": "application/json",
-            "Authorization": "Token " + token
-        },
-    }
+//     const options = {
+//         method: "POST",
+//         mode: "cors",
+//         headers: {
+//             "Content-Type": "application/json",
+//             "Accept": "application/json",
+//             "Authorization": "Token " + token
+//         },
+//     }
 
-    for (let i = 0; i < data.length; i++) {
-        arrayOfSubwayStations.push(data[i]["Cells"]["Station"]);
-        options.body = JSON.stringify({ query: arrayOfSubwayStations[i] })
+//     for (let i = 0; i < data.length; i++) {
+//         arrayOfSubwayStations.push(data[i]["Cells"]["Station"]);
+//         options.body = JSON.stringify({ query: arrayOfSubwayStations[i] })
 
-        await fetch(url, options)
-            .then(response => response.json())
-            .then(result => arrayOfSubwayStations[i] = result)
-            .catch(error => console.log("error", error));
-    }
-}
+//         await fetch(url, options)
+//             .then(response => response.json())
+//             .then(result => arrayOfSubwayStations[i] = result)
+//             .catch(error => console.log("error", error));
+//     }
+// }
 
 // getMetro();
 
@@ -208,6 +216,8 @@ function getRows(result) {
         arrayOfRows.push(table);
     };
     liElems = Math.ceil(arrayOfRows.length / ROWS);
+    ymaps.ready(displayMap);
+    getMetro();
     simEvent(dropdown);
     pagination();
     listenUsersModification();
@@ -234,14 +244,13 @@ function listenUsersModification() {
     }));
 }
 
-ymaps.ready(displayMap);
 function displayMap() {
     var myMap = new ymaps.Map('map', {
         center: [55.753994, 37.622093],
         zoom: 9
     });
 
-    ymaps.geocode(' Москва, Климентовский переулок 14', {
+    ymaps.geocode(arrayOfRows[0]['location'], {
         /**
          * Опции запроса
          * @see https://api.yandex.ru/maps/doc/jsapi/2.1/ref/reference/geocode.xml
@@ -288,6 +297,14 @@ function displayMap() {
 
         myMap.geoObjects.add(myPlacemark);
     });
+}
+
+
+function getMetro() {
+    fetch(`https://geocode-maps.yandex.ru/1.x/?apikey=44ce412e-8f7a-4501-b998-1ebe0a8e4d9f&geocode=${coordinat[0]},${coordinat[1]}&kind=metro&results=1`, {
+        method: "GET",
+    }).then(response => response.text())
+        .then(result => console.log(result));
 }
 
 // Connect to web-server login
@@ -409,3 +426,4 @@ btnGetTable.addEventListener('click', (e) => {
 //         arrayOfSubwayStations = Array.from(json);
 //     })
 //     .catch(error => console.log(error));
+
