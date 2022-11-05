@@ -10,6 +10,7 @@ const btnsShowModal = document.querySelectorAll('.show-modal');
 const closeModal = function () {
     modal.classList.add('hidden');
     overlay.classList.add('hidden');
+    document.querySelector('body').classList.add('lock');
 };
 
 const openModal = function () {
@@ -374,7 +375,10 @@ dropdown.addEventListener('change', () => {
 })
 
 function pagination() {
+    //first element is active on default
+    pagiLi[0].classList.add('active');
     for (let item of pagiLi) {
+
         item.addEventListener('click', (e) => {
             let pageNum = +e.target.innerHTML;
             let start = (pageNum - 1) * ROWS;
@@ -386,6 +390,13 @@ function pagination() {
             for (let note of notes) {
                 note.makeRow();
             }
+            //clicking the other item others get unactive
+            for(let item of pagiLi){
+                item.classList.remove('active');
+            }
+            //make the current item active
+            e.target.classList.add('active');
+
         })
     }
 }
