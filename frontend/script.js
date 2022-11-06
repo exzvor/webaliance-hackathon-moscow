@@ -72,112 +72,18 @@ class Table {
         this.subway = subway;
         this.condition = condition;
         this.counter = counter;
+
+        this.analog = -1;
+        this.etalon = false;
+        this.price = 0;
+        this.metroStation = "";
+
     }
     makeRow() {
         const row = `<tr id='${this.counter++}'><td class="checkbox"><input type=checkbox></td><td class="location"><input type='text' value='${this.location}'></td><td class="rooms"><input type='text' value='${this.rooms}'></td><td class="age"><input type='text' value='${this.age}'></td><td class="floors"><input type='text' value='${this.floors}'></td><td class="material"><input type='text' value='${this.material}'></td><td class="currentFloor"><input type='text' value='${this.currentFloor}'></td><td class="squareFlat"><input type='text' value='${this.squareFlat}'></td><td class="squareKitchen"><input type='text' value='${this.squareKitchen}'></td><td class="balcony"><input type='text' value='${this.balcony}'></td><td class="subway"><input type='text' value='${this.subway}'></td><td class="condition"><input type='text' value='${this.condition}'></td></tr>`;
         const tb = document.querySelector('.tbody');
         tb.insertAdjacentHTML('beforeend', row);
     };
-}
-
-// async function getStations() {
-//     const baseUrl = "https://apidata.mos.ru/v1/datasets/1488/rows?api_key=";
-//     const apiKey = "5650e2cd63716f4dc8319a168c93b080";
-//     const myHeaders = new Headers();
-//     myHeaders.append("Content-Type", "application/json")
-
-//     return await fetch(baseUrl + `${apiKey}`, {
-//         method: "GET",
-//         headers: myHeaders,
-//     })
-// }
-
-// async function getMetro() {
-//     const response = await getStations();
-//     const data = await response.json();
-
-//     const url = "https://suggestions.dadata.ru/suggestions/api/4_1/rs/suggest/metro";
-//     const token = "246a794897b8dd2f7655f6167c1f2d9dd05173a6";
-
-//     const options = {
-//         method: "POST",
-//         mode: "cors",
-//         headers: {
-//             "Content-Type": "application/json",
-//             "Accept": "application/json",
-//             "Authorization": "Token " + token
-//         },
-//     }
-
-//     for (let i = 0; i < data.length; i++) {
-//         arrayOfSubwayStations.push(data[i]["Cells"]["Station"]);
-//         options.body = JSON.stringify({ query: arrayOfSubwayStations[i] })
-
-//         await fetch(url, options)
-//             .then(response => response.json())
-//             .then(result => arrayOfSubwayStations[i] = result)
-//             .catch(error => console.log("error", error));
-//     }
-// }
-
-
-// getMetro();
-
-function addRemoteness() {
-    for (let i = 0; i < arrayOfRows.length; i++) {
-        for (let j = 0; j < arrayOfSubwayStations[i]["suggestions"].length; j++) {
-            let lon = arrayOfSubwayStations[i]["suggestions"][j]["data"]["geo_lon"];
-            let lat = arrayOfSubwayStations[i]["suggestions"][j]["data"]["geo_lat"];
-            arrayOfSubwayStations[i]["suggestions"][j]["data"]["remoteness"] = getDistanceBetween(lat, lon, coordinat[0][0], coordinat[0][1]);
-        }
-    }
-}
-
-function findNearest() {
-    debugger
-    let min = null;
-    let obj = {};
-    for (let i = 0; i < arrayOfRows.length; i++) {
-        for (let j = 0; j < arrayOfSubwayStations[i]["suggestions"].length; j++) {
-            if (arrayOfSubwayStations[i]["suggestions"][j]["data"]["remoteness"] < arrayOfSubwayStations[i]["suggestions"][j + 1]?.["data"]["remoteness"] && !min) {
-                min = arrayOfSubwayStations[i]["suggestions"][j]["data"]["remoteness"];
-            } if (arrayOfSubwayStations[i]["suggestions"][j]["data"]["remoteness"] < arrayOfSubwayStations[i + 1]["suggestions"][j]?.["data"]["remoteness"] && !min) {
-                min = arrayOfSubwayStations[i]["suggestions"][j]["data"]["remoteness"];
-            } else if (min > arrayOfSubwayStations[i]["suggestions"][j]["data"]["remoteness"]) {
-                min = arrayOfSubwayStations[i]["suggestions"][j]["data"]["remoteness"];
-                obj = arrayOfSubwayStations[i]["suggestions"][j]["data"];
-            }
-        }
-    }
-    return obj;
-}
-
-Number.prototype.toRad = function () {
-    return this * Math.PI / 180;
-}
-
-function getDistanceBetween(lat1, lon1, lat2, lon2) {
-
-    const R = 6371; // km
-    const x1 = lat2 - lat1;
-    const dLat = x1.toRad();
-    const x2 = lon2 - lon1;
-    const dLon = x2.toRad();
-    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-
-        Math.cos(lat1.toRad()) * Math.cos(lat2.toRad()) *
-        Math.sin(dLon / 2) * Math.sin(dLon / 2);
-    Math.cos(lat1.toRad()) * Math.cos(lat2.toRad()) *
-        Math.sin(dLon / 2) * Math.sin(dLon / 2);
-
-    Math.cos(lat1.toRad()) * Math.cos(lat2.toRad()) *
-        Math.sin(dLon / 2) * Math.sin(dLon / 2);
-
-    Math.cos(lat1.toRad()) * Math.cos(lat2.toRad()) *
-        Math.sin(dLon / 2) * Math.sin(dLon / 2);
-
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    return R * c;
 }
 
 function fileReader(oEvent) {
@@ -196,9 +102,6 @@ function fileReader(oEvent) {
         });
         getRows(result);
         ymaps.ready(displayMap);
-
-        // addRemoteness();
-        // console.log(findNearest());
     };
     reader.readAsArrayBuffer(oFile);
 }
@@ -220,7 +123,6 @@ function getRows(result) {
         arrayOfRows.push(table);
     };
     liElems = Math.ceil(arrayOfRows.length / ROWS);
-    getMetro();
     simEvent(dropdown);
     pagination();
     listenUsersModification();
@@ -276,15 +178,6 @@ function displayMap() {
         console.log(coordinat);
 
         firstGeoObject.options.set('preset', 'islands#darkBlueDotIconWithCaption');
-        coordinat.push(coords);
-        console.log(coordinat);
-
-        firstGeoObject.options.set('preset', 'islands#darkBlueDotIconWithCaption');
-        coordinat.push(coords);
-        console.log(coordinat);
-
-        firstGeoObject.options.set('preset', 'islands#darkBlueDotIconWithCaption');
-        firstGeoObject.options.set('preset', 'islands#darkBlueDotIconWithCaption');
 
         // Получаем строку с адресом и выводим в иконке геообъекта.
         firstGeoObject.properties.set('iconCaption', firstGeoObject.getAddressLine());
@@ -309,36 +202,33 @@ function displayMap() {
             preset: 'islands#violetStretchyIcon'
         });
 
-
         myMap.geoObjects.add(myPlacemark);
     });
 }
 
 function getMetro() {
-    fetch(`https://geocode-maps.yandex.ru/1.x/?apikey=44ce412e-8f7a-4501-b998-1ebe0a8e4d9f&geocode=${coordinat[0]},${coordinat[1]}&kind=metro&results=1`, {
-        method: "GET",
-    }).then(response => response.text())
-        .then(result => console.log(result));
+    var xhr = new XMLHttpRequest();
+    let address = `https://geocode-maps.yandex.ru/1.x/?apikey=44ce412e-8f7a-4501-b998-1ebe0a8e4d9f&geocode=${coordinat[0][1]},${coordinat[0][0]}&kind=metro&results=1`;
+    console.log(address)
+    xhr.open('GET', address, true);
+
+    // Значение responseType, если указано, должно быть пустой строкой или "document"
+    xhr.responseType = 'document';
+
+    // overrideMimeType() может быть использован, чтобы заставить ответ обрабатываться как XML
+    xhr.overrideMimeType('text/xml');
+
+    xhr.onload = function () {
+        if (xhr.readyState === xhr.DONE) {
+            if (xhr.status === 200) {
+                xhr.response
+                console.log(xhr.response);
+                console.log(xhr.responseXML);
+            }
+        }
+    };
+    xhr.send(null);
 }
-
-// Connect to web-server login
-form.addEventListener('submit', (e) => {
-    e.preventDefault();
-
-    const email = document.querySelector(".email").value;
-    const password = document.querySelector(".password").value;
-    const body = `{\"email\": \"${email}\", \"password\": \"${password}\"}`;
-    if (token === 'Bearer ') {
-        fetch(loginURL, {
-            method: "POST",
-            body: body,
-        })
-            .then(response => response.json())
-            .then(result => token += result.account.token)
-            .catch(error => console.log('error', error));
-        console.log('you are succesfully logged in');
-    } else console.log('you are logged in already');
-});
 
 // Download and read excel file 
 document.querySelector('#input__file').addEventListener('change', function (e) {
@@ -434,6 +324,8 @@ function pagination() {
 btnGetTable.addEventListener('click', (e) => {
     e.preventDefault();
 
+    getMetro();
+
     let myHeaders = new Headers();
     myHeaders.append("Authorization", token);
     myHeaders.append("Content-Type", "application/json");
@@ -446,11 +338,3 @@ btnGetTable.addEventListener('click', (e) => {
         .then(result => console.log(result))
         .catch(error => console.log('error', error));
 })
-
-// fetch("./subways.json")
-//     .then(response => response.json())
-//     .then(json => {
-//         arrayOfSubwayStations = Array.from(json);
-//     })
-//     .catch(error => console.log(error));
-
