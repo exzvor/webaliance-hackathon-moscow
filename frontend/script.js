@@ -1,9 +1,4 @@
 'use strict'
-import { parseString } from 'xml2js';
-var xml = "<root>Hello xml2js!</root>"
-parseString(xml, function (err, result) {
-    console.dir(result);
-});
 
 const modal = document.querySelector('.modal');
 const overlay = document.querySelector('.overlay');
@@ -13,6 +8,7 @@ const btnsShowModal = document.querySelectorAll('.show-modal');
 const closeModal = function () {
     modal.classList.add('hidden');
     overlay.classList.add('hidden');
+    document.querySelector('body').classList.add('lock');
 };
 
 const openModal = function () {
@@ -34,6 +30,7 @@ document.addEventListener('keydown', function (e) {
     }
 })
 
+
 const form = document.getElementById('form');
 const btnMakeCalculation = document.querySelector('.btn-calculate');
 const btnGetTable = document.querySelector('.btn-gettable');
@@ -45,6 +42,7 @@ const ul = document.querySelector('#pagination');
 let pagiLi = document.querySelectorAll('#pagination li');
 let liElems = "";
 let ROWS = 20;  // default dropdown menu position
+
 let token = sessionStorage.getItem('key');
 let coordinat = [];
 
@@ -122,6 +120,7 @@ class Table {
 //     }
 // }
 
+
 // getMetro();
 
 function addRemoteness() {
@@ -167,6 +166,8 @@ function getDistanceBetween(lat1, lon1, lat2, lon2) {
     const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
         Math.cos(lat1.toRad()) * Math.cos(lat2.toRad()) *
         Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    Math.cos(lat1.toRad()) * Math.cos(lat2.toRad()) *
+        Math.sin(dLon / 2) * Math.sin(dLon / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     return R * c;
 }
@@ -186,6 +187,8 @@ function fileReader(oEvent) {
             if (roa.length) result[sheetName] = roa;
         });
         getRows(result);
+        ymaps.ready(displayMap);
+
         // addRemoteness();
         // console.log(findNearest());
     };
@@ -209,8 +212,10 @@ function getRows(result) {
         arrayOfRows.push(table);
     };
     liElems = Math.ceil(arrayOfRows.length / ROWS);
+
     ymaps.ready(displayMap);
     getMetro();
+
     simEvent(dropdown);
     pagination();
     listenUsersModification();
@@ -243,6 +248,7 @@ function displayMap() {
         zoom: 9
     });
 
+
     ymaps.geocode(arrayOfRows[0]['location'], {
         /**
          * Опции запроса
@@ -265,6 +271,10 @@ function displayMap() {
         console.log(coordinat);
 
         firstGeoObject.options.set('preset', 'islands#darkBlueDotIconWithCaption');
+        coordinat.push(coords);
+        console.log(coordinat);
+
+        firstGeoObject.options.set('preset', 'islands#darkBlueDotIconWithCaption');
         // Получаем строку с адресом и выводим в иконке геообъекта.
         firstGeoObject.properties.set('iconCaption', firstGeoObject.getAddressLine());
 
@@ -279,14 +289,17 @@ function displayMap() {
         /**
          * Все данные в виде javascript-объекта.
          */
+
         console.log('Все данные геообъекта: ', firstGeoObject.properties.getAll());
 
         var myPlacemark = new ymaps.Placemark(coords, {
+
             iconContent: 'моя метка',
             balloonContent: 'Содержимое балуна <strong>моей метки</strong>'
         }, {
             preset: 'islands#violetStretchyIcon'
         });
+
 
         myMap.geoObjects.add(myPlacemark);
     });
@@ -312,9 +325,11 @@ form.addEventListener('submit', (e) => {
             method: "POST",
             body: body,
         })
+
             .then(response => response.json())
             .then(result => token += result.account.token)
             .catch(error => console.log('error', error));
+
         console.log('you are succesfully logged in');
     } else console.log('you are logged in already');
 });
@@ -356,6 +371,7 @@ btnMakeCalculation.addEventListener('click', (e) => {
         headers: myHeaders,
         body: body
     })
+
         .then(response => response.text())
         .then(result => console.log(result))
         .catch(error => console.log('error', error));
@@ -382,7 +398,10 @@ dropdown.addEventListener('change', () => {
 })
 
 function pagination() {
+    //first element is active on default
+    pagiLi[0].classList.add('active');
     for (let item of pagiLi) {
+
         item.addEventListener('click', (e) => {
             let pageNum = +e.target.innerHTML;
             let start = (pageNum - 1) * ROWS;
@@ -394,6 +413,14 @@ function pagination() {
             for (let note of notes) {
                 note.makeRow();
             }
+            //clicking the other item others get unactive
+            for (let item of pagiLi) {
+                item.classList.remove('active');
+            }
+            //make the current item active
+            e.target.classList.add('active');
+
+
         })
     }
 }
@@ -409,8 +436,10 @@ btnGetTable.addEventListener('click', (e) => {
         method: "GET",
         headers: myHeaders,
     }).then(response => response.text())
+
         .then(result => console.log(result))
         .catch(error => console.log('error', error));
+
 })
 
 // fetch("./subways.json")
