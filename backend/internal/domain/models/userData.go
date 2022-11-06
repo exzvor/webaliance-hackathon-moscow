@@ -9,12 +9,21 @@ import (
 type UserTable struct {
 	gorm.Model
 	Location     string `json:"location"`
+	Analog       int    `json:"analog"`
 	Age          string `json:"age"`
 	Balcony      bool   `json:"balcony"`
 	Counter      int    `json:"counter"`
 	CurrentFloor int    `json:"current_floor"`
 	Floors       int    `json:"floors"`
 	Subway       int    `json:"subway"`
+	Etalon       bool   `json:"etalon"`
+	MarketPrice  int    `json:"market_price"`
+	Price        int    `json:"price"`
+	MetroStation string `json:"metro_station"`
+	Rooms        int    `json:"rooms"`
+	Walls        string `json:"walls"`
+	Area         int    `json:"area"`
+	Condition    int    `json:"condition"`
 	UserId       uint   `json:"user_id"` // пользователь, которому принадлежит таблица
 }
 

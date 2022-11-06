@@ -16,21 +16,21 @@
 ### Пример JSON body для создания новой таблицы:
 *{<br/>
 "location": "ул.Пирогова д.27",<br/>
-"analog": 2,<br/>
-"etalon": "ул.Пирогова д.27",<br/>
-"market_price": 2200000,<br/>
-"price": 2300000,<br/>
-"metro_station": "ВДНХ",<br/>
-"rooms": 2,<br/>
-"walls": " ",<br/>
-"area ": " ",<br/>
+"analog": 1,<br/>
 "age": "Новостройка",<br/>
 "balcony": true,<br/>
-"condition": "с отделкой",<br/>
 "counter": 3,<br/>
-"current_floor": 5,<br/>
+"current_floor": 2,<br/>
 "floors": 30,<br/>
-"subway": 5<br/>
+"subway": 5,<br/>
+"etalon": false,<br/>
+"market_price": 100000,<br/>
+"price": 50000,<br/>
+"metro_station": "ВДНХ",<br/>
+"rooms": 4,<br/>
+"walls": " ",<br/>
+"area": 3,<br/>
+"condition": 2<br/>
 }*
 
 ### Дополнительная информация
