@@ -6,11 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script type="text/javascript" src="https://api-maps.yandex.ru/2.1/?apikey=44ce412e-8f7a-4501-b998-1ebe0a8e4d9f&lang=ru_RU"></script>
     <script type="text/javascript" src="https://unpkg.com/xlsx@0.15.1/dist/xlsx.full.min.js"></script>
+
     <script type="text/javascript" src="https://unpkg.com/browse/xml-js@1.6.11/lib/index.js"></script>
     <link rel='stylesheet' href='css/style.css'>
     <title>Real Estate Moskow Hack</title>
 </head>
-<body>
+<body class='lock'>
     <div class="wrapper">
         <header class="pop-up">
             <div class="modal">
@@ -27,85 +28,84 @@
 
 
     <div class="header">
-       <div class="container">
-        <div class="header__body">
-            <div class="header__logo">
-                WEBAliance
+        <div class="container">
+            <div class="header__body">
+                <div class="header__logo">
+                    WEBAliance
+                </div>
+                <ul class="header__list">
+                    <li>
+                        <a class="header__link-auth header__link">Рассчитать недвижимость легко!</a>
+                    </li>
+                </ul>
             </div>
-            <ul class="header__list">
-
-                <li>
-                    <a href="auth.html" class="header__link-auth header__link">Войти</a>
-                </li>
-            </ul>
         </div>
     </div>
-</div>
-<!-- HEADER END -->
+    <!-- HEADER END -->
 
-<main class="main">
-    <div class="container">
-        <div class="table-btn btn"></div>
-        <div class="table__pop-up">
-            <div class="container">
-                <label class="input__file" for="input__file">
-                    Загрузить файл
-                    <input id="input__file" type="file">
-                </label>
-                <form id="form" class='' style='display: none;'>
-                    <input class="email" type="text" name="email" placeholder="Введите email" value="any@mail.ru">
-                    <input class="password" type="password" name="password" id="password" placeholder="Введите пароль" value="1234567">
-                    <button class="btn btn-senddata" type="submit">Log In</button>
+    <main class="main">
+        <div class="container">
+            <div class="table-btn btn active"></div>
+            <div class="table__pop-up active">
+                <div class="container">
+                    <label class="input__file" for="input__file">
+                        Загрузить файл
+                        <input id="input__file" type="file">
+                    </label>
+                    <form id="form" class='' style='display: none;'>
+                        <input class="email" type="text" name="email" placeholder="Введите email" value="any@mail.ru">
+                        <input class="password" type="password" name="password" id="password" placeholder="Введите пароль" value="1234567">
+                        <button class="btn btn-senddata" type="submit">Log In</button>
+                    </form>
+                    <div class="table__dropdown">
+                        <form action="/">
+                            <label for="dropdown">Выберите количество отображаемых строк:</label>
+                            <select id="dropdown" name="dropdown">
+                              <option value="10">10</option>
+                              <option selected value="20">20</option>
+                              <option value="30">30</option>
+                              <option value="40">40</option>
+                          </select>
+                      </form>
+                  </div>
+
+                  <form action="#" method='post' class="table-form">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <td class ="checkbox"></td>
+                                <td>Местоположение</td>
+                                <td>Количество<br>комнат</td>
+                                <td>Сегмент</td>
+                                <td>Этажность<br>дома</td>
+                                <td>Материал стен<br>(<span class="params">кирпич, панель, монолит</span>)</td>
+                                <td>Этаж<br>расположения</td>
+                                <td>Площадь квартиры<br>кв.м</td>
+                                <td>Площадь кухни<br>кв.м</td>
+                                <td>Наличие<br>балкона/<br>лоджии</td>
+                                <td>Удаленность<br>от станции метро</td>
+                                <td>Состояние<br>(<span class="params">без отделки,<br>муниципальный ремонт,<br>современная отделка</span>)</td>
+                                <td>Рыночная<br>стоимость</td>
+                            </tr>
+                        </thead>
+                        <tbody class="tbody">
+                        </tbody>
+                    </table>
                 </form>
-                <div class="table__dropdown">
-                    <form action="/">
-                        <label for="dropdown">Выберите количество отображаемых строк:</label>
-                        <select id="dropdown" name="dropdown">
-                          <option value="10">10</option>
-                          <option selected value="20">20</option>
-                          <option value="30">50</option>
-                          <option value="40">100</option>
-                      </select>
-                  </form>
-              </div>
-
-              <form action="#" method='post' class="table-form">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <td class ="checkbox"></td>
-                            <td>Местоположение</td>
-                            <td>Количество<br>комнат</td>
-                            <td>Сегмент</td>
-                            <td>Этажность<br>дома</td>
-                            <td>Материал стен<br>(<span class="params">кирпич, панель, монолит</span>)</td>
-                            <td>Этаж<br>расположения</td>
-                            <td>Площадь квартиры<br>кв.м</td>
-                            <td>Площадь кухни<br>кв.м</td>
-                            <td>Наличие<br>балкона/<br>лоджии</td>
-                            <td>Удаленность<br>от станции метро</td>
-                            <td>Состояние<br>(<span class="params">без отделки,<br>муниципальный ремонт,<br>современная отделка</span>)</td>
-                            <td>Рыночная<br>стоимость</td>
-                        </tr>
-                    </thead>
-                    <tbody class="tbody">
-                    </tbody>
-                </table>
-            </form>
-            <ul id="pagination">
-            </ul> 
-            <div class="result-row">
-                <button class="btn btn-calculate">Расчитать стоимость</button>
-                <button class="btn btn-gettable">Получить таблицу</button>
+                <ul id="pagination">
+                </ul> 
+                <div class="result-row">
+                    <button class="btn btn-calculate">Расчитать стоимость</button>
+                    <button class="btn btn-gettable">Получить таблицу</button>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div class="map">
-        <div id="map" ></div>
-    </div>
+        <div class="map">
+            <div id="map" ></div>
+        </div>
 
-</div>
+    </div>
 </main>
 <!-- MAIN END -->
 
