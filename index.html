@@ -1,10 +1,172 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Hach</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./frontend/css/style-auth.css">
+    <title>Добро пожаловать</title>
 </head>
 <body>
-<h1>Hack 2022</h1>
+    <div class="container">
+
+        <header></header>
+        <main>
+            <div class="modal registration hidden">
+                <button class="close-modal">&times;</button>
+                <p>Укажите ваш email:</p>
+                <input id="registration-email" type="email" class="registration-email" name="email" autocomplete="username" placeholder="E-mail" value="" pattern="[^@\s]+@[^@\s]+\.[^@\s]+" title="Invalid email address">
+                <p>Укажите ваш пароль:</p>
+                <input id="registration-password" type="password" class="registration-password" name="password" autocomplete="current-password" placeholder="Пароль" value="" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{7,20}$">
+                <button class="btn-confirm-registration">Подтвердить</button>
+            </div>
+            <div class="overlay hidden"></div>
+        
+            <div class="auth">
+            <img src="./image/logo.png" width="100px" height="100px" class="logo" alt="logo webaliance">
+            <h2 class="title welcome-text">Авторизация</h2>
+            <form>
+                <div class="show-error-message"></div>
+                <div class="input">
+                    <div class="input-inner">
+                        <input id="email" type="email" class="input input-email" name="email" autocomplete="username" placeholder="E-mail" value="" pattern="[^@\s]+@[^@\s]+\.[^@\s]+" title="Invalid email address">
+                        <span class="email-error"></span>
+                    </div>
+                </div>
+
+                <div class="input">
+                    <div class="input-inner">
+                        <input id="password" type="password" class="input input-password" name="password" autocomplete="current-password" placeholder="Пароль" value="" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{7,20}$">
+                        <span class="password-error"></span>
+                        <span class="password-eye">
+                            <img alt="password-eye" src="./image/eye.svg">
+                        </span>
+                    </div>
+                </div>
+
+                <div class="submit-button">
+                    <button type="button" class="button-login">Войти</button>
+                    <button type="button" class="button-signup">Регистрация</button>
+                </div>
+
+            </form>
+                <div class="forgot-password">
+                    <a class="forgot-password-link" href="/recover-password-request">Забыли пароль</a>
+                </div>
+        </div>
+        </main>
+        <footer></footer>
+
+    </div>
+    <script>
+
+        'use strict'
+
+        const newUserURL = "https://hack-auth.herokuapp.com/api/user/new";
+        const loginURL = "https://hack-auth.herokuapp.com/api/user/login";
+        const btnLogin = document.querySelector('.button-login');
+        const emailReg = document.querySelector('.registration-email');
+        const passReg = document.querySelector('.registration-password')
+        const emailField = document.querySelector('.input-email');
+        const passField = document.querySelector('.input-password');
+        const eye = document.querySelector('.password-eye');
+        const showErrMsg = document.querySelector('.show-error-message');
+        let token = "Bearer ";
+
+        eye.addEventListener('click', () => {
+            eye.classList.toggle("password-eye-pressed");
+            const type = passField.getAttribute("type") === "password" ? "text" : "password";
+            passField.setAttribute("type", type);
+        });
+
+        if (emailField.checkValidity()) {
+            emailField.classList.add('text-field__input_valid');
+        } else {
+            emailField.classList.add('text-field__input_invalid');
+            emailField.nextElementSibling.textContent = emailField.validationMessage;
+        }
+
+        if (passField.checkValidity()) {
+            passField.classList.add('text-field__input_valid');
+        } else {
+            passField.classList.add('text-field__input_invalid');
+            passField.nextElementSibling.textContent = passField.validationMessage;
+        }
+
+        let userNotFound = new Error("Пользователь с таким логином или паролем не найден");
+
+        btnLogin.addEventListener('click', (e)=> {
+            e.preventDefault();
+            const body = `{\"email\": \"${emailField.value}\", \"password\": \"${passField.value}\"}`;
+            try {
+                fetch(loginURL, {
+                    method: "POST",
+                    body: body,
+                })
+                    .then(response => response.json())
+                    .then(result => {
+                        // console.log(result);
+                        try {
+                            if (result.status === false) {
+                                showErrMsg.textContent = userNotFound;
+                                throw userNotFound;
+                            } else {
+                                token += result.account.token;
+                                sessionStorage.setItem('key', token);
+                                window.location = "./frontend/main.html";
+                            }
+                        } catch (error) {
+                            console.log(error);
+                        }
+                    })
+            } catch (error) {
+                console.log("error happen" , error);
+            }
+        });
+        
+        const modal = document.querySelector('.modal');
+        const overlay = document.querySelector('.overlay');
+        const btnCloseModal = document.querySelector('.close-modal');
+        const btnRegistration = document.querySelector('.button-signup');
+        const btnConfirmReg = document.querySelector('.btn-confirm-registration');
+
+        const closeModal = function () {
+            modal.classList.add('hidden');
+            overlay.classList.add('hidden');
+        };
+
+        const openModal = function () {
+            console.log("Button clicked");
+            modal.classList.remove('hidden');
+            overlay.classList.remove('hidden');
+        }
+
+        btnRegistration.addEventListener('click', openModal);
+
+        btnCloseModal.addEventListener('click', closeModal);
+        overlay.addEventListener('click', closeModal);
+
+        btnConfirmReg.addEventListener('click', (e)=> {
+            e.preventDefault();
+            const body = `{\"email\": \"${emailReg.value}\", \"password\": \"${passReg.value}\"}`;
+            try {
+                fetch(newUserURL, {
+                    method: "POST",
+                    body: body,
+                })
+                    .then(response => response.json())
+                    .then(result => console.log(result));
+        }catch(error){
+            console.log(error);
+        }});
+
+        document.addEventListener('keydown', function (e) {
+
+            if (e.key === "Escape" && !modal.classList.contains('hidden')) {
+                closeModal();
+            }
+        })
+
+    </script>
 </body>
 </html>
