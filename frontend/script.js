@@ -24,12 +24,10 @@ btnCloseModal.addEventListener('click', closeModal);
 overlay.addEventListener('click', closeModal);
 
 document.addEventListener('keydown', function (e) {
-
     if (e.key === "Escape" && !modal.classList.contains('hidden')) {
         closeModal();
     }
 })
-
 
 const form = document.getElementById('form');
 const btnMakeCalculation = document.querySelector('.btn-calculate');
@@ -42,6 +40,7 @@ const ul = document.querySelector('#pagination');
 let pagiLi = document.querySelectorAll('#pagination li');
 let liElems = "";
 let ROWS = 20;  // default dropdown menu position
+let mStation = "";
 
 let token = sessionStorage.getItem('key');
 let coordinat = [];
@@ -73,7 +72,7 @@ class Table {
         this.condition = condition;
         this.counter = counter;
 
-        this.analog = -1;
+        this.analog = 0;
         this.etalon = false;
         this.price = 0;
         this.metroStation = "";
@@ -155,7 +154,6 @@ function displayMap() {
         zoom: 9
     });
 
-
     ymaps.geocode(arrayOfRows[0]['location'], {
         /**
          * Опции запроса
@@ -206,6 +204,35 @@ function displayMap() {
     });
 }
 
+function xml2json(xml) {
+    try {
+        var obj = {};
+        if (xml.children.length > 0) {
+            for (var i = 0; i < xml.children.length; i++) {
+                var item = xml.children.item(i);
+                var nodeName = item.nodeName;
+
+                if (typeof (obj[nodeName]) == "undefined") {
+                    obj[nodeName] = xml2json(item);
+                } else {
+                    if (typeof (obj[nodeName].push) == "undefined") {
+                        var old = obj[nodeName];
+
+                        obj[nodeName] = [];
+                        obj[nodeName].push(old);
+                    }
+                    obj[nodeName].push(xml2json(item));
+                }
+            }
+        } else {
+            obj = xml.textContent;
+        }
+        return obj;
+    } catch (e) {
+        console.log(e.message);
+    }
+}
+
 function getMetro() {
     var xhr = new XMLHttpRequest();
     let address = `https://geocode-maps.yandex.ru/1.x/?apikey=44ce412e-8f7a-4501-b998-1ebe0a8e4d9f&geocode=${coordinat[0][1]},${coordinat[0][0]}&kind=metro&results=1`;
@@ -221,9 +248,9 @@ function getMetro() {
     xhr.onload = function () {
         if (xhr.readyState === xhr.DONE) {
             if (xhr.status === 200) {
-                xhr.response
-                console.log(xhr.response);
-                console.log(xhr.responseXML);
+                let obj = xml2json(xhr.response);
+                console.log(obj)
+                mStation = obj['ymaps']['GeoObjectCollection']['featureMember']['GeoObject']['name'];
             }
         }
     };
@@ -243,6 +270,12 @@ document.querySelector('#input__file').addEventListener('change', function (e) {
     }
 });
 
+function cookingData() {
+    for (let i = 0; i < arrayOfRows.length; i++) {
+        arrayOfRows[i].metroStation = mStation;
+    }
+}
+
 btnMakeCalculation.addEventListener('click', (e) => {
     console.log('sending request to the server')
     e.preventDefault();
@@ -250,14 +283,18 @@ btnMakeCalculation.addEventListener('click', (e) => {
 
     Array.from(document.querySelectorAll('input[type=checkbox]:checked')).forEach((item => { item.checked === true ? arr.push(item.parentElement.parentElement.id) : null }));
 
-    let raw = "";
+    getMetro();
+    cookingData();
+
+    let body = "";
 
     arr.forEach(item => {
 
         arrayOfRows[item]['balcony'] === 'да' ? arrayOfRows[item]['balcony'] = true : arrayOfRows[item]['balcony'] = false;
 
-        raw = JSON.stringify(arrayOfRows[item]);
+        body = JSON.stringify(arrayOfRows[item]);
     })
+    console.log(body);
     let myHeaders = new Headers();
     myHeaders.append("Authorization", token);
     myHeaders.append("Content-Type", "application/json");
@@ -270,7 +307,6 @@ btnMakeCalculation.addEventListener('click', (e) => {
         .then(response => response.text())
         .then(result => console.log(result))
         .catch(error => console.log('error', error));
-
 });
 
 function simEvent(element) {
@@ -323,8 +359,6 @@ function pagination() {
 
 btnGetTable.addEventListener('click', (e) => {
     e.preventDefault();
-
-    getMetro();
 
     let myHeaders = new Headers();
     myHeaders.append("Authorization", token);
