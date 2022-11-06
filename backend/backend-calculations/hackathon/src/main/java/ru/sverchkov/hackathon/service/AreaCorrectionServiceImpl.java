@@ -1,7 +1,7 @@
 package ru.sverchkov.hackathon.service;
 
 import org.springframework.stereotype.Service;
-import ru.sverchkov.hackathon.model.dto.ObjectResponseDto;
+import ru.sverchkov.hackathon.model.dto.ObjectDto;
 import ru.sverchkov.hackathon.model.dto.RequestDto;
 
 import java.util.List;
@@ -56,14 +56,14 @@ public class AreaCorrectionServiceImpl implements AreaCorrectionService {
 
 
     @Override
-    public void makeAdjustmentsToTheArea(List<ObjectResponseDto> objectResponseDtos, RequestDto requestDto) {
-        objectResponseDtos.forEach(objectResponseDto -> {
+    public void makeAdjustmentsToTheArea(List<ObjectDto> objectEtalonDtos, RequestDto requestDto) {
+        requestDto.getObjectDtos().forEach(objectDto -> {
             AtomicReference<Float> averageMarketPrice = new AtomicReference<>(0F);
             AtomicReference<Integer> counter = new AtomicReference<>(0);
-            requestDto.getRequestReferenceObjectDtos().forEach(requestReferenceObjectDto -> {
+            objectEtalonDtos.forEach(objectEtalonDto -> {
                 counter.getAndSet(counter.get() + 1);
-                Integer objectArea = objectResponseDto.getArea();
-                Integer referenceArea = requestReferenceObjectDto.getArea();
+                Integer objectArea = objectDto.getArea();
+                Integer referenceArea = objectEtalonDto.getArea();
                 boolean objectLessThatThirty = objectArea < THIRTY;
                 boolean objectFromThirtyToFifty = objectArea > THIRTY && objectArea < FIFTY;
                 boolean objectFromFiftyToSixtyFive = objectArea > FIFTY && objectArea < SIXTY_FIVE;
@@ -71,129 +71,128 @@ public class AreaCorrectionServiceImpl implements AreaCorrectionService {
                 boolean objectFromNineteenToOneHundredAndTwenty = objectArea > NINETEEN && objectArea < ONE_HUNDRED_AND_TWENTY;
                 boolean objectOverOneHundredAndTwenty = objectArea > ONE_HUNDRED_AND_TWENTY;
 
-                //<30
                 boolean lessThatThirty = referenceArea < THIRTY;
                 if(lessThatThirty && objectFromThirtyToFifty){
-                    averageMarketPrice.set(averageMarketPrice.get() + (requestReferenceObjectDto.getMarketPrice() - (requestReferenceObjectDto.getMarketPrice() * PERCENT_OBJECT_FROM_THIRTY_TO_FIFTY_REFERENCE_OVER_THIRTY) / ONE_HUNDRED_PERCENT));
+                    averageMarketPrice.set(averageMarketPrice.get() + (objectDto.getMarketPrice() - (objectDto.getMarketPrice() * PERCENT_OBJECT_FROM_THIRTY_TO_FIFTY_REFERENCE_OVER_THIRTY) / ONE_HUNDRED_PERCENT));
                 }
                 if(lessThatThirty && objectFromFiftyToSixtyFive){
-                    averageMarketPrice.set(averageMarketPrice.get() + (requestReferenceObjectDto.getMarketPrice() - (requestReferenceObjectDto.getMarketPrice() * PERCENT_OBJECT_FROM_FIFTY_TO_SIXTY_FIVE_REFERENCE_OVER_THIRTY) / ONE_HUNDRED_PERCENT));
+                    averageMarketPrice.set(averageMarketPrice.get() + (objectDto.getMarketPrice() - (objectDto.getMarketPrice() * PERCENT_OBJECT_FROM_FIFTY_TO_SIXTY_FIVE_REFERENCE_OVER_THIRTY) / ONE_HUNDRED_PERCENT));
                 }
                 if(lessThatThirty && objectFromSixtyFiveToNineteen){
-                    averageMarketPrice.set(averageMarketPrice.get() + (requestReferenceObjectDto.getMarketPrice() - (requestReferenceObjectDto.getMarketPrice() * PERCENT_OBJECT_FROM_SIXTY_FIVE_TO_NINETEEN_REFERENCE_OVER_THIRTY) / ONE_HUNDRED_PERCENT));
+                    averageMarketPrice.set(averageMarketPrice.get() + (objectDto.getMarketPrice() - (objectDto.getMarketPrice() * PERCENT_OBJECT_FROM_SIXTY_FIVE_TO_NINETEEN_REFERENCE_OVER_THIRTY) / ONE_HUNDRED_PERCENT));
                 }
                 if(lessThatThirty && objectFromNineteenToOneHundredAndTwenty){
-                    averageMarketPrice.set(averageMarketPrice.get() + (requestReferenceObjectDto.getMarketPrice() - (requestReferenceObjectDto.getMarketPrice() * PERCENT_OBJECT_FROM_NINETEEN_TO_ONE_HUNDRED_AND_TWENTY_REFERENCE_OVER_THIRTY) / ONE_HUNDRED_PERCENT));
+                    averageMarketPrice.set(averageMarketPrice.get() + (objectDto.getMarketPrice() - (objectDto.getMarketPrice() * PERCENT_OBJECT_FROM_NINETEEN_TO_ONE_HUNDRED_AND_TWENTY_REFERENCE_OVER_THIRTY) / ONE_HUNDRED_PERCENT));
                 }
                 if(lessThatThirty && objectOverOneHundredAndTwenty){
-                    averageMarketPrice.set(averageMarketPrice.get() + (requestReferenceObjectDto.getMarketPrice() - (requestReferenceObjectDto.getMarketPrice() * PERCENT_OBJECT_OVER_ONE_HUNDRED_AND_TWENTY_REFERENCE_OVER_THIRTY) / ONE_HUNDRED_PERCENT));
+                    averageMarketPrice.set(averageMarketPrice.get() + (objectDto.getMarketPrice() - (objectDto.getMarketPrice() * PERCENT_OBJECT_OVER_ONE_HUNDRED_AND_TWENTY_REFERENCE_OVER_THIRTY) / ONE_HUNDRED_PERCENT));
                 }
                 if(lessThatThirty && objectLessThatThirty){
-                    averageMarketPrice.set(averageMarketPrice.get() + requestReferenceObjectDto.getMarketPrice());
+                    averageMarketPrice.set(averageMarketPrice.get() + objectDto.getMarketPrice());
                 }
                 //30-50
                 boolean fromThirtyToFifty = referenceArea > THIRTY && referenceArea < FIFTY;
                 if(fromThirtyToFifty && objectLessThatThirty){
-                    averageMarketPrice.set(averageMarketPrice.get() + (requestReferenceObjectDto.getMarketPrice() + (requestReferenceObjectDto.getMarketPrice() * PERCENT_OBJECT_LESS_THEN_THIRTY_REFERENCE_FROM_THIRTY_TO_FIFTY) / ONE_HUNDRED_PERCENT));
+                    averageMarketPrice.set(averageMarketPrice.get() + (objectDto.getMarketPrice() + (objectDto.getMarketPrice() * PERCENT_OBJECT_LESS_THEN_THIRTY_REFERENCE_FROM_THIRTY_TO_FIFTY) / ONE_HUNDRED_PERCENT));
                 }
                 if(fromThirtyToFifty && objectFromFiftyToSixtyFive){
-                    averageMarketPrice.set(averageMarketPrice.get() + (requestReferenceObjectDto.getMarketPrice() - (requestReferenceObjectDto.getMarketPrice() * PERCENT_OBJECT_FROM_FIFTY_TO_SIXTY_FIVE_REFERENCE_FROM_THIRTY_TO_FIFTY) / ONE_HUNDRED_PERCENT));
+                    averageMarketPrice.set(averageMarketPrice.get() + (objectDto.getMarketPrice() - (objectDto.getMarketPrice() * PERCENT_OBJECT_FROM_FIFTY_TO_SIXTY_FIVE_REFERENCE_FROM_THIRTY_TO_FIFTY) / ONE_HUNDRED_PERCENT));
                 }
                 if(fromThirtyToFifty && objectFromSixtyFiveToNineteen){
-                    averageMarketPrice.set(averageMarketPrice.get() + (requestReferenceObjectDto.getMarketPrice() - (requestReferenceObjectDto.getMarketPrice() * PERCENT_OBJECT_FROM_SIXTY_FIVE_TO_NINETEEN_REFERENCE_FROM_THIRTY_TO_FIFTY) / ONE_HUNDRED_PERCENT));
+                    averageMarketPrice.set(averageMarketPrice.get() + (objectDto.getMarketPrice() - (objectDto.getMarketPrice() * PERCENT_OBJECT_FROM_SIXTY_FIVE_TO_NINETEEN_REFERENCE_FROM_THIRTY_TO_FIFTY) / ONE_HUNDRED_PERCENT));
                 }
                 if(fromThirtyToFifty && objectFromNineteenToOneHundredAndTwenty){
-                    averageMarketPrice.set(averageMarketPrice.get() + (requestReferenceObjectDto.getMarketPrice() - (requestReferenceObjectDto.getMarketPrice() * PERCENT_OBJECT_FROM_NINETEEN_TO_ONE_HUNDRED_AND_TWENTY_REFERENCE_FROM_THIRTY_TO_FIFTY) / ONE_HUNDRED_PERCENT));
+                    averageMarketPrice.set(averageMarketPrice.get() + (objectDto.getMarketPrice() - (objectDto.getMarketPrice() * PERCENT_OBJECT_FROM_NINETEEN_TO_ONE_HUNDRED_AND_TWENTY_REFERENCE_FROM_THIRTY_TO_FIFTY) / ONE_HUNDRED_PERCENT));
                 }
                 if(fromThirtyToFifty && objectOverOneHundredAndTwenty){
-                    averageMarketPrice.set(averageMarketPrice.get() + (requestReferenceObjectDto.getMarketPrice() - (requestReferenceObjectDto.getMarketPrice() * PERCENT_OBJECT_OVER_ONE_HUNDRED_AND_TWENTY_REFERENCE_FROM_THIRTY_TO_FIFTY) / ONE_HUNDRED_PERCENT));
+                    averageMarketPrice.set(averageMarketPrice.get() + (objectDto.getMarketPrice() - (objectDto.getMarketPrice() * PERCENT_OBJECT_OVER_ONE_HUNDRED_AND_TWENTY_REFERENCE_FROM_THIRTY_TO_FIFTY) / ONE_HUNDRED_PERCENT));
                 }
                 if(fromThirtyToFifty && objectFromThirtyToFifty){
-                    averageMarketPrice.set(averageMarketPrice.get() + requestReferenceObjectDto.getMarketPrice());
+                    averageMarketPrice.set(averageMarketPrice.get() + objectDto.getMarketPrice());
                 }
                 //50-65
                 boolean fromFiftyToSixtyFive = referenceArea > FIFTY && referenceArea < SIXTY_FIVE;
                 if(fromFiftyToSixtyFive && objectLessThatThirty){
-                    averageMarketPrice.set(averageMarketPrice.get() + (requestReferenceObjectDto.getMarketPrice() + (requestReferenceObjectDto.getMarketPrice() * PERCENT_OBJECT_LESS_THEN_THIRTY_REFERENCE_FROM_FIFTY_TO_SIXTY_FIVE) / ONE_HUNDRED_PERCENT));
+                    averageMarketPrice.set(averageMarketPrice.get() + (objectDto.getMarketPrice() + (objectDto.getMarketPrice() * PERCENT_OBJECT_LESS_THEN_THIRTY_REFERENCE_FROM_FIFTY_TO_SIXTY_FIVE) / ONE_HUNDRED_PERCENT));
                 }
                 if(fromFiftyToSixtyFive && objectFromThirtyToFifty){
-                    averageMarketPrice.set(averageMarketPrice.get() + (requestReferenceObjectDto.getMarketPrice() + (requestReferenceObjectDto.getMarketPrice() * PERCENT_OBJECT_FROM_THIRTY_TO_FIFTY_REFERENCE_FROM_FIFTY_TO_SIXTY_FIVE) / ONE_HUNDRED_PERCENT));
+                    averageMarketPrice.set(averageMarketPrice.get() + (objectDto.getMarketPrice() + (objectDto.getMarketPrice() * PERCENT_OBJECT_FROM_THIRTY_TO_FIFTY_REFERENCE_FROM_FIFTY_TO_SIXTY_FIVE) / ONE_HUNDRED_PERCENT));
                 }
                 if(fromFiftyToSixtyFive && objectFromSixtyFiveToNineteen){
-                    averageMarketPrice.set(averageMarketPrice.get() + (requestReferenceObjectDto.getMarketPrice() - (requestReferenceObjectDto.getMarketPrice() * PERCENT_OBJECT_FROM_SIXTY_FIVE_TO_NINETEEN_REFERENCE_FROM_FIFTY_TO_SIXTY_FIVE) / ONE_HUNDRED_PERCENT));
+                    averageMarketPrice.set(averageMarketPrice.get() + (objectDto.getMarketPrice() - (objectDto.getMarketPrice() * PERCENT_OBJECT_FROM_SIXTY_FIVE_TO_NINETEEN_REFERENCE_FROM_FIFTY_TO_SIXTY_FIVE) / ONE_HUNDRED_PERCENT));
                 }
                 if(fromFiftyToSixtyFive && objectFromNineteenToOneHundredAndTwenty){
-                    averageMarketPrice.set(averageMarketPrice.get() + (requestReferenceObjectDto.getMarketPrice() - (requestReferenceObjectDto.getMarketPrice() * PERCENT_OBJECT_FROM_NINETEEN_TO_ONE_HUNDRED_AND_TWENTY_REFERENCE_FROM_FIFTY_TO_SIXTY_FIVE) / ONE_HUNDRED_PERCENT));
+                    averageMarketPrice.set(averageMarketPrice.get() + (objectDto.getMarketPrice() - (objectDto.getMarketPrice() * PERCENT_OBJECT_FROM_NINETEEN_TO_ONE_HUNDRED_AND_TWENTY_REFERENCE_FROM_FIFTY_TO_SIXTY_FIVE) / ONE_HUNDRED_PERCENT));
                 }
                 if(fromFiftyToSixtyFive && objectOverOneHundredAndTwenty){
-                    averageMarketPrice.set(averageMarketPrice.get() + (requestReferenceObjectDto.getMarketPrice() - (requestReferenceObjectDto.getMarketPrice() * PERCENT_OBJECT_OVER_ONE_HUNDRED_AND_TWENTY_REFERENCE_FROM_FIFTY_TO_SIXTY_FIVE) / ONE_HUNDRED_PERCENT));
+                    averageMarketPrice.set(averageMarketPrice.get() + (objectDto.getMarketPrice() - (objectDto.getMarketPrice() * PERCENT_OBJECT_OVER_ONE_HUNDRED_AND_TWENTY_REFERENCE_FROM_FIFTY_TO_SIXTY_FIVE) / ONE_HUNDRED_PERCENT));
                 }
                 if(fromFiftyToSixtyFive && objectFromFiftyToSixtyFive){
-                    averageMarketPrice.set(averageMarketPrice.get() + requestReferenceObjectDto.getMarketPrice());
+                    averageMarketPrice.set(averageMarketPrice.get() + objectDto.getMarketPrice());
                 }
                 //65-90
                 boolean fromSixtyFiveToNineteen = referenceArea > SIXTY_FIVE && referenceArea < NINETEEN;
                 if(fromSixtyFiveToNineteen && objectLessThatThirty){
-                    averageMarketPrice.set(averageMarketPrice.get() + (requestReferenceObjectDto.getMarketPrice() + (requestReferenceObjectDto.getMarketPrice()  * PERCENT_OBJECT_LESS_THEN_THIRTY_REFERENCE_SIXTY_FIVE_TO_NINETEEN) / ONE_HUNDRED_PERCENT));
+                    averageMarketPrice.set(averageMarketPrice.get() + (objectDto.getMarketPrice() + (objectDto.getMarketPrice()  * PERCENT_OBJECT_LESS_THEN_THIRTY_REFERENCE_SIXTY_FIVE_TO_NINETEEN) / ONE_HUNDRED_PERCENT));
                 }
                 if(fromSixtyFiveToNineteen && objectFromThirtyToFifty){
-                    averageMarketPrice.set(averageMarketPrice.get() + (requestReferenceObjectDto.getMarketPrice() + (requestReferenceObjectDto.getMarketPrice()  * PERCENT_OBJECT_FROM_THIRTY_TO_FIFTY_REFERENCE_SIXTY_FIVE_TO_NINETEEN) / ONE_HUNDRED_PERCENT));
+                    averageMarketPrice.set(averageMarketPrice.get() + (objectDto.getMarketPrice() + (objectDto.getMarketPrice()  * PERCENT_OBJECT_FROM_THIRTY_TO_FIFTY_REFERENCE_SIXTY_FIVE_TO_NINETEEN) / ONE_HUNDRED_PERCENT));
                 }
                 if(fromSixtyFiveToNineteen && objectFromFiftyToSixtyFive ){
-                    averageMarketPrice.set(averageMarketPrice.get() + (requestReferenceObjectDto.getMarketPrice() + (requestReferenceObjectDto.getMarketPrice()  * PERCENT_OBJECT_FROM_FIFTY_TO_SIXTY_FIVE_REFERENCE_SIXTY_FIVE_TO_NINETEEN) / ONE_HUNDRED_PERCENT));
+                    averageMarketPrice.set(averageMarketPrice.get() + (objectDto.getMarketPrice() + (objectDto.getMarketPrice()  * PERCENT_OBJECT_FROM_FIFTY_TO_SIXTY_FIVE_REFERENCE_SIXTY_FIVE_TO_NINETEEN) / ONE_HUNDRED_PERCENT));
                 }
                 if(fromSixtyFiveToNineteen && objectFromNineteenToOneHundredAndTwenty){
-                    averageMarketPrice.set(averageMarketPrice.get() + (requestReferenceObjectDto.getMarketPrice() - (requestReferenceObjectDto.getMarketPrice()  * PERCENT_OBJECT_FROM_NINETEEN_TO_ONE_HUNDRED_AND_TWENTY_REFERENCE_SIXTY_FIVE_TO_NINETEEN) / ONE_HUNDRED_PERCENT));
+                    averageMarketPrice.set(averageMarketPrice.get() + (objectDto.getMarketPrice() - (objectDto.getMarketPrice()  * PERCENT_OBJECT_FROM_NINETEEN_TO_ONE_HUNDRED_AND_TWENTY_REFERENCE_SIXTY_FIVE_TO_NINETEEN) / ONE_HUNDRED_PERCENT));
                 }
                 if(fromSixtyFiveToNineteen && objectOverOneHundredAndTwenty){
-                    averageMarketPrice.set(averageMarketPrice.get() + (requestReferenceObjectDto.getMarketPrice() - (requestReferenceObjectDto.getMarketPrice()  * PERCENT_OBJECT_OVER_ONE_HUNDRED_AND_TWENTY_REFERENCE_SIXTY_FIVE_TO_NINETEEN) / ONE_HUNDRED_PERCENT));
+                    averageMarketPrice.set(averageMarketPrice.get() + (objectDto.getMarketPrice() - (objectDto.getMarketPrice()  * PERCENT_OBJECT_OVER_ONE_HUNDRED_AND_TWENTY_REFERENCE_SIXTY_FIVE_TO_NINETEEN) / ONE_HUNDRED_PERCENT));
                 }
                 if(fromSixtyFiveToNineteen && objectFromSixtyFiveToNineteen){
-                    averageMarketPrice.set(averageMarketPrice.get() + requestReferenceObjectDto.getMarketPrice());
+                    averageMarketPrice.set(averageMarketPrice.get() + objectDto.getMarketPrice());
                 }
                 //90-120
                 boolean fromNineteenToOneHundredAndTwenty = referenceArea > NINETEEN && referenceArea < ONE_HUNDRED_AND_TWENTY;
                 if(fromNineteenToOneHundredAndTwenty && objectLessThatThirty){
-                    averageMarketPrice.set(averageMarketPrice.get() + (requestReferenceObjectDto.getMarketPrice() + (requestReferenceObjectDto.getMarketPrice() * PERCENT_OBJECT_LESS_THEN_THIRTY_REFERENCE_FROM_NINETEEN_TO_ONE_HUNDRED_AND_TWENTY) / ONE_HUNDRED_PERCENT));
+                    averageMarketPrice.set(averageMarketPrice.get() + (objectDto.getMarketPrice() + (objectDto.getMarketPrice() * PERCENT_OBJECT_LESS_THEN_THIRTY_REFERENCE_FROM_NINETEEN_TO_ONE_HUNDRED_AND_TWENTY) / ONE_HUNDRED_PERCENT));
                 }
                 if(fromNineteenToOneHundredAndTwenty && objectFromThirtyToFifty){
-                    averageMarketPrice.set(averageMarketPrice.get() + (requestReferenceObjectDto.getMarketPrice() + (requestReferenceObjectDto.getMarketPrice() * PERCENT_OBJECT_FROM_THIRTY_TO_FIFTY_REFERENCE_FROM_NINETEEN_TO_ONE_HUNDRED_AND_TWENTY) / ONE_HUNDRED_PERCENT));
+                    averageMarketPrice.set(averageMarketPrice.get() + (objectDto.getMarketPrice() + (objectDto.getMarketPrice() * PERCENT_OBJECT_FROM_THIRTY_TO_FIFTY_REFERENCE_FROM_NINETEEN_TO_ONE_HUNDRED_AND_TWENTY) / ONE_HUNDRED_PERCENT));
                 }
                 if(fromNineteenToOneHundredAndTwenty && objectFromFiftyToSixtyFive){
-                    averageMarketPrice.set(averageMarketPrice.get() + (requestReferenceObjectDto.getMarketPrice() + (requestReferenceObjectDto.getMarketPrice() * PERCENT_OBJECT_FROM_FIFTY_TO_SIXTY_FIVE_REFERENCE_FROM_NINETEEN_TO_ONE_HUNDRED_AND_TWENTY) / ONE_HUNDRED_PERCENT));
+                    averageMarketPrice.set(averageMarketPrice.get() + (objectDto.getMarketPrice() + (objectDto.getMarketPrice() * PERCENT_OBJECT_FROM_FIFTY_TO_SIXTY_FIVE_REFERENCE_FROM_NINETEEN_TO_ONE_HUNDRED_AND_TWENTY) / ONE_HUNDRED_PERCENT));
                 }
                 if(fromNineteenToOneHundredAndTwenty && objectFromSixtyFiveToNineteen){
-                    averageMarketPrice.set(averageMarketPrice.get() + (requestReferenceObjectDto.getMarketPrice() + (requestReferenceObjectDto.getMarketPrice() * PERCENT_OBJECT_FROM_SIXTY_FIVE_TO_NINETEEN_REFERENCE_FROM_NINETEEN_TO_ONE_HUNDRED_AND_TWENTY) / ONE_HUNDRED_PERCENT));
+                    averageMarketPrice.set(averageMarketPrice.get() + (objectDto.getMarketPrice() + (objectDto.getMarketPrice() * PERCENT_OBJECT_FROM_SIXTY_FIVE_TO_NINETEEN_REFERENCE_FROM_NINETEEN_TO_ONE_HUNDRED_AND_TWENTY) / ONE_HUNDRED_PERCENT));
                 }
                 if(fromNineteenToOneHundredAndTwenty && objectOverOneHundredAndTwenty){
-                    averageMarketPrice.set(averageMarketPrice.get() + (requestReferenceObjectDto.getMarketPrice() - (requestReferenceObjectDto.getMarketPrice() * PERCENT_OBJECT_OVER_ONE_HUNDRED_AND_TWENTY_REFERENCE_FROM_NINETEEN_TO_ONE_HUNDRED_AND_TWENTY) / ONE_HUNDRED_PERCENT));
+                    averageMarketPrice.set(averageMarketPrice.get() + (objectDto.getMarketPrice() - (objectDto.getMarketPrice() * PERCENT_OBJECT_OVER_ONE_HUNDRED_AND_TWENTY_REFERENCE_FROM_NINETEEN_TO_ONE_HUNDRED_AND_TWENTY) / ONE_HUNDRED_PERCENT));
                 }
                 if(fromNineteenToOneHundredAndTwenty && objectFromNineteenToOneHundredAndTwenty){
-                    averageMarketPrice.set(averageMarketPrice.get() + requestReferenceObjectDto.getMarketPrice());
+                    averageMarketPrice.set(averageMarketPrice.get() + objectDto.getMarketPrice());
                 }
                 //>120
                 boolean overOneHundredAndTwenty = referenceArea > ONE_HUNDRED_AND_TWENTY;
                 if(overOneHundredAndTwenty && objectLessThatThirty){
-                    averageMarketPrice.set(averageMarketPrice.get() + (requestReferenceObjectDto.getMarketPrice() + (requestReferenceObjectDto.getMarketPrice() * PERCENT_OBJECT_LESS_THEN_THIRTY_REFERENCE_OVER_ONE_HUNDRED_AND_TWENTY) / ONE_HUNDRED_PERCENT));
+                    averageMarketPrice.set(averageMarketPrice.get() + (objectDto.getMarketPrice() + (objectDto.getMarketPrice() * PERCENT_OBJECT_LESS_THEN_THIRTY_REFERENCE_OVER_ONE_HUNDRED_AND_TWENTY) / ONE_HUNDRED_PERCENT));
                 }
                 if(overOneHundredAndTwenty && objectFromThirtyToFifty){
-                    averageMarketPrice.set(averageMarketPrice.get() + (requestReferenceObjectDto.getMarketPrice() + (requestReferenceObjectDto.getMarketPrice() * PERCENT_OBJECT_FROM_THIRTY_TO_FIFTY_REFERENCE_OVER_ONE_HUNDRED_AND_TWENTY) / ONE_HUNDRED_PERCENT));
+                    averageMarketPrice.set(averageMarketPrice.get() + (objectDto.getMarketPrice() + (objectDto.getMarketPrice() * PERCENT_OBJECT_FROM_THIRTY_TO_FIFTY_REFERENCE_OVER_ONE_HUNDRED_AND_TWENTY) / ONE_HUNDRED_PERCENT));
                 }
                 if(overOneHundredAndTwenty && objectFromFiftyToSixtyFive){
-                    averageMarketPrice.set(averageMarketPrice.get() + (requestReferenceObjectDto.getMarketPrice() + (requestReferenceObjectDto.getMarketPrice() * PERCENT_OBJECT_FROM_FIFTY_TO_SIXTY_FIVE_REFERENCE_OVER_ONE_HUNDRED_AND_TWENTY) / ONE_HUNDRED_PERCENT));
+                    averageMarketPrice.set(averageMarketPrice.get() + (objectDto.getMarketPrice() + (objectDto.getMarketPrice() * PERCENT_OBJECT_FROM_FIFTY_TO_SIXTY_FIVE_REFERENCE_OVER_ONE_HUNDRED_AND_TWENTY) / ONE_HUNDRED_PERCENT));
                 }
                 if(overOneHundredAndTwenty && objectFromSixtyFiveToNineteen){
-                    averageMarketPrice.set(averageMarketPrice.get() + (requestReferenceObjectDto.getMarketPrice() + (requestReferenceObjectDto.getMarketPrice() * PERCENT_OBJECT_FROM_SIXTY_FIVE_TO_NINETEEN_REFERENCE_OVER_ONE_HUNDRED_AND_TWENTY) / ONE_HUNDRED_PERCENT));
+                    averageMarketPrice.set(averageMarketPrice.get() + (objectDto.getMarketPrice() + (objectDto.getMarketPrice() * PERCENT_OBJECT_FROM_SIXTY_FIVE_TO_NINETEEN_REFERENCE_OVER_ONE_HUNDRED_AND_TWENTY) / ONE_HUNDRED_PERCENT));
                 }
                 if(overOneHundredAndTwenty && objectFromNineteenToOneHundredAndTwenty){
-                    averageMarketPrice.set(averageMarketPrice.get() + (requestReferenceObjectDto.getMarketPrice() + (requestReferenceObjectDto.getMarketPrice() * PERCENT_OBJECT_FROM_NINETEEN_TO_ONE_HUNDRED_AND_TWENTY_REFERENCE_OVER_ONE_HUNDRED_AND_TWENTY) / ONE_HUNDRED_PERCENT));
+                    averageMarketPrice.set(averageMarketPrice.get() + (objectDto.getMarketPrice() + (objectDto.getMarketPrice() * PERCENT_OBJECT_FROM_NINETEEN_TO_ONE_HUNDRED_AND_TWENTY_REFERENCE_OVER_ONE_HUNDRED_AND_TWENTY) / ONE_HUNDRED_PERCENT));
                 }
                 if(overOneHundredAndTwenty && objectOverOneHundredAndTwenty){
-                    averageMarketPrice.set(averageMarketPrice.get() + requestReferenceObjectDto.getMarketPrice());
+                    averageMarketPrice.set(averageMarketPrice.get() + objectDto.getMarketPrice());
                 }
 
             });
-            objectResponseDto.setMarketPrice(averageMarketPrice.get() / counter.get());
+            objectDto.setMarketPrice((int) (averageMarketPrice.get() / counter.get()));
         });
     }
 }

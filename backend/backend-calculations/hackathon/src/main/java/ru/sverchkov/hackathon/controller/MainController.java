@@ -4,7 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import ru.sverchkov.hackathon.model.dto.ObjectResponseDto;
+import ru.sverchkov.hackathon.model.dto.ObjectDto;
 import ru.sverchkov.hackathon.model.dto.RequestDto;
 import ru.sverchkov.hackathon.service.MarketValueCalculationService;
 
@@ -22,7 +22,7 @@ public class MainController {
     }
 
     @GetMapping(GET_WITH_CORRECTIONS)
-    public ResponseEntity<List<ObjectResponseDto>> getWithCorrections(@RequestBody RequestDto requestDto){
-        return ResponseEntity.ok(marketValueCalculationService.calculate(requestDto));
+    public ResponseEntity<List<ObjectDto>> getWithCorrections(@RequestBody RequestDto requestDto){
+        return ResponseEntity.ok(marketValueCalculationService.calculate(requestDto).getObjectDtos());
     }
 }

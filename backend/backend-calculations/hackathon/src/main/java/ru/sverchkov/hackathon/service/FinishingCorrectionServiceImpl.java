@@ -1,7 +1,7 @@
 package ru.sverchkov.hackathon.service;
 
 import org.springframework.stereotype.Service;
-import ru.sverchkov.hackathon.model.dto.ObjectResponseDto;
+import ru.sverchkov.hackathon.model.dto.ObjectDto;
 import ru.sverchkov.hackathon.model.dto.RequestDto;
 
 import java.util.List;
@@ -23,46 +23,45 @@ public class FinishingCorrectionServiceImpl implements FinishingCorrectionServic
     private static final Float OBJECT_UPGRADE_REFERENCE_ECONOMY = 6700F;
 
     @Override
-    public void makeAdjustmentsToTheFinish(List<ObjectResponseDto> objectResponseDtos, RequestDto requestDto) {
-        objectResponseDtos.forEach(objectResponseDto -> {
+    public void makeAdjustmentsToTheFinish(List<ObjectDto> objectEtalonDtos, RequestDto requestDto) {
+        requestDto.getObjectDtos().forEach(objectDto -> {
             AtomicReference<Float> averageMarketPrice = new AtomicReference<>(0F);
             AtomicReference<Integer> counter = new AtomicReference<>(0);
-            requestDto.getRequestReferenceObjectDtos().forEach(requestReferenceObjectDto -> {
+            objectEtalonDtos.forEach(objectEtalonDto -> {
                 counter.getAndSet(counter.get() + 1);
-                String conditionObject = objectResponseDto.getCondition();
-                String conditionReference = requestReferenceObjectDto.getCondition();
+                String conditionObject = objectDto.getCondition();
+                String conditionReference = objectEtalonDto.getCondition();
                 if(conditionObject.equals(NO) && conditionReference.equals(ECONOMY)){
-                    averageMarketPrice.set(averageMarketPrice.get() + (requestReferenceObjectDto.getMarketPrice() - OBJECT_NO_REFERENCE_ECONOMY));
+                    averageMarketPrice.set(averageMarketPrice.get() + (objectDto.getMarketPrice() - OBJECT_NO_REFERENCE_ECONOMY));
                 }
                 if(conditionObject.equals(NO) && conditionReference.equals(UPGRADE)){
-                    averageMarketPrice.set(averageMarketPrice.get() + (requestReferenceObjectDto.getMarketPrice() - OBJECT_NO_REFERENCE_UPGRADE));
+                    averageMarketPrice.set(averageMarketPrice.get() + (objectDto.getMarketPrice() - OBJECT_NO_REFERENCE_UPGRADE));
                 }
                 if(conditionObject.equals(NO) && conditionReference.equals(NO)){
-                    averageMarketPrice.set(averageMarketPrice.get() + requestReferenceObjectDto.getMarketPrice());
+                    averageMarketPrice.set(averageMarketPrice.get() + objectDto.getMarketPrice());
                 }
 
                 if(conditionObject.equals(ECONOMY) && conditionReference.equals(NO)){
-                    averageMarketPrice.set(averageMarketPrice.get() + (requestReferenceObjectDto.getMarketPrice() + OBJECT_ECONOMY_REFERENCE_NO));
+                    averageMarketPrice.set(averageMarketPrice.get() + (objectDto.getMarketPrice() + OBJECT_ECONOMY_REFERENCE_NO));
                 }
                 if(conditionObject.equals(ECONOMY) && conditionReference.equals(UPGRADE)){
-                    averageMarketPrice.set(averageMarketPrice.get() + (requestReferenceObjectDto.getMarketPrice() - OBJECT_ECONOMY_REFERENCE_UPGRADE));
+                    averageMarketPrice.set(averageMarketPrice.get() + (objectDto.getMarketPrice() - OBJECT_ECONOMY_REFERENCE_UPGRADE));
                 }
                 if(conditionObject.equals(ECONOMY) && conditionReference.equals(ECONOMY)){
-                    averageMarketPrice.set(averageMarketPrice.get() + requestReferenceObjectDto.getMarketPrice());
+                    averageMarketPrice.set(averageMarketPrice.get() + objectDto.getMarketPrice());
                 }
 
                 if(conditionObject.equals(UPGRADE) && conditionReference.equals(NO)){
-                    averageMarketPrice.set(averageMarketPrice.get() + (requestReferenceObjectDto.getMarketPrice() + OBJECT_UPGRADE_REFERENCE_NO));
+                    averageMarketPrice.set(averageMarketPrice.get() + (objectDto.getMarketPrice() + OBJECT_UPGRADE_REFERENCE_NO));
                 }
                 if(conditionObject.equals(UPGRADE) && conditionReference.equals(ECONOMY)){
-                    averageMarketPrice.set(averageMarketPrice.get() + (requestReferenceObjectDto.getMarketPrice() + OBJECT_UPGRADE_REFERENCE_ECONOMY));
+                    averageMarketPrice.set(averageMarketPrice.get() + (objectDto.getMarketPrice() + OBJECT_UPGRADE_REFERENCE_ECONOMY));
                 }
                 if(conditionObject.equals(UPGRADE) && conditionReference.equals(UPGRADE)){
-                    averageMarketPrice.set(averageMarketPrice.get() + requestReferenceObjectDto.getMarketPrice());
+                    averageMarketPrice.set(averageMarketPrice.get() + objectDto.getMarketPrice());
                 }
-
             });
-            objectResponseDto.setMarketPrice(averageMarketPrice.get() / counter.get());
+            objectDto.setMarketPrice((int) (averageMarketPrice.get() / counter.get()));
         });
     }
 }

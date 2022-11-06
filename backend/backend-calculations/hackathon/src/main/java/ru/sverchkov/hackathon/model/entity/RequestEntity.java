@@ -13,7 +13,6 @@ import java.util.Objects;
 @Setter
 @ToString
 @RequiredArgsConstructor
-@Builder
 @Table(name = "requests", schema = "public")
 public class RequestEntity {
 
@@ -25,18 +24,10 @@ public class RequestEntity {
             mappedBy = "requestEntity",
             cascade = CascadeType.ALL,
             orphanRemoval = true
+
     )
     @ToString.Exclude
-    private List<ReferenceObjectEntity> referenceObjectEntities;
-
-
-    @OneToMany(
-            mappedBy = "requestEntity",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true
-    )
-    @ToString.Exclude
-    private List<ObjectEntity> objectEntities;
+    private List<ObjectEntity> objects;
 
     @Override
     public boolean equals(Object o) {

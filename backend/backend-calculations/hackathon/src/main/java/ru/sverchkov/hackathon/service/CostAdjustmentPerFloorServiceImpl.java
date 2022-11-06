@@ -1,7 +1,7 @@
 package ru.sverchkov.hackathon.service;
 
 import org.springframework.stereotype.Service;
-import ru.sverchkov.hackathon.model.dto.ObjectResponseDto;
+import ru.sverchkov.hackathon.model.dto.ObjectDto;
 import ru.sverchkov.hackathon.model.dto.RequestDto;
 
 import java.util.List;
@@ -20,45 +20,45 @@ public class CostAdjustmentPerFloorServiceImpl implements CostAdjustmentPerFloor
 
     private static final Float ONE_HUNDRED_PERCENT = 100F;
     @Override
-    public void makePriceAdjustmentsByFloor(List<ObjectResponseDto> objectResponseDtos, RequestDto requestDto) {
-        objectResponseDtos.forEach(objectResponseDto -> {
+    public void makePriceAdjustmentsByFloor(List<ObjectDto> objectEtalonDtos, RequestDto requestDto) {
+        requestDto.getObjectDtos().forEach(objectDto -> {
             AtomicReference<Float> averageMarketPrice = new AtomicReference<>(0F);
             AtomicReference<Integer> counter = new AtomicReference<>(0);
-            requestDto.getRequestReferenceObjectDtos().forEach(requestReferenceObjectDto -> {
+            objectEtalonDtos.forEach(objectEtalonDto -> {
                 counter.getAndSet(counter.get() + 1);
-                Integer objectResponseCurrentFloor = objectResponseDto.getCurrentFloor();
-                Integer objectResponseFloors = objectResponseDto.getFloors();
-                Integer referenceObjectCurrentFloor = requestReferenceObjectDto.getCurrentFloor();
-                Integer referenceObjectFloors = requestReferenceObjectDto.getFloors();
+                Integer objectResponseCurrentFloor = objectDto.getCurrentFloor();
+                Integer objectResponseFloors = objectDto.getFloors();
+                Integer referenceObjectCurrentFloor = objectEtalonDto.getCurrentFloor();
+                Integer referenceObjectFloors = objectEtalonDto.getFloors();
                 if(objectResponseCurrentFloor == 1 && (referenceObjectCurrentFloor > 1 && referenceObjectCurrentFloor < referenceObjectFloors)){
-                    averageMarketPrice.set(averageMarketPrice.get() + (requestReferenceObjectDto.getMarketPrice() - (requestReferenceObjectDto.getMarketPrice() * PERCENTAGE_FOR_OBJECT_FIRST_AND_REFERENCE_MIDDLE) / ONE_HUNDRED_PERCENT));
+                    averageMarketPrice.set(averageMarketPrice.get() + (objectDto.getMarketPrice() - (objectDto.getMarketPrice() * PERCENTAGE_FOR_OBJECT_FIRST_AND_REFERENCE_MIDDLE) / ONE_HUNDRED_PERCENT));
                 }
                 if(objectResponseCurrentFloor == 1 && referenceObjectCurrentFloor.equals(referenceObjectFloors)){
-                    averageMarketPrice.set(averageMarketPrice.get() + (requestReferenceObjectDto.getMarketPrice() - (requestReferenceObjectDto.getMarketPrice() * PERCENTAGE_FOR_OBJECT_FIRST_AND_REFERENCE_HIGH) / ONE_HUNDRED_PERCENT));
+                    averageMarketPrice.set(averageMarketPrice.get() + (objectDto.getMarketPrice() - (objectDto.getMarketPrice() * PERCENTAGE_FOR_OBJECT_FIRST_AND_REFERENCE_HIGH) / ONE_HUNDRED_PERCENT));
                 }
                 if((objectResponseCurrentFloor > 1 && objectResponseCurrentFloor < objectResponseFloors) && referenceObjectCurrentFloor == 1){
-                    averageMarketPrice.set(averageMarketPrice.get() + (requestReferenceObjectDto.getMarketPrice() + (requestReferenceObjectDto.getMarketPrice() * PERCENTAGE_FOR_OBJECT_MIDDLE_REFERENCE_FIRST) / ONE_HUNDRED_PERCENT));
+                    averageMarketPrice.set(averageMarketPrice.get() + (objectDto.getMarketPrice() + (objectDto.getMarketPrice() * PERCENTAGE_FOR_OBJECT_MIDDLE_REFERENCE_FIRST) / ONE_HUNDRED_PERCENT));
                 }
                 if((objectResponseCurrentFloor > 1 && objectResponseCurrentFloor < objectResponseFloors) && referenceObjectCurrentFloor.equals(referenceObjectFloors)){
-                    averageMarketPrice.set(averageMarketPrice.get() + (requestReferenceObjectDto.getMarketPrice() + (requestReferenceObjectDto.getMarketPrice() * PERCENTAGE_FOR_OBJECT_MIDDLE_REFERENCE_HIGH) / ONE_HUNDRED_PERCENT));
+                    averageMarketPrice.set(averageMarketPrice.get() + (objectDto.getMarketPrice() + (objectDto.getMarketPrice() * PERCENTAGE_FOR_OBJECT_MIDDLE_REFERENCE_HIGH) / ONE_HUNDRED_PERCENT));
                 }
                 if(objectResponseCurrentFloor.equals(objectResponseFloors) && referenceObjectCurrentFloor == 1){
-                    averageMarketPrice.set(averageMarketPrice.get() + (requestReferenceObjectDto.getMarketPrice() + (requestReferenceObjectDto.getMarketPrice() * PERCENTAGE_FOR_OBJECT_HIGH_REFERENCE_FIRST) / ONE_HUNDRED_PERCENT));
+                    averageMarketPrice.set(averageMarketPrice.get() + (objectDto.getMarketPrice() + (objectDto.getMarketPrice() * PERCENTAGE_FOR_OBJECT_HIGH_REFERENCE_FIRST) / ONE_HUNDRED_PERCENT));
                 }
                 if(objectResponseCurrentFloor.equals(objectResponseFloors) && (referenceObjectCurrentFloor > 1 && referenceObjectCurrentFloor < referenceObjectFloors)){
-                    averageMarketPrice.set(averageMarketPrice.get() + (requestReferenceObjectDto.getMarketPrice() + (requestReferenceObjectDto.getMarketPrice() * PERCENTAGE_FOR_OBJECT_HIGH_REFERENCE_MIDDLE) / ONE_HUNDRED_PERCENT));
+                    averageMarketPrice.set(averageMarketPrice.get() + (objectDto.getMarketPrice() + (objectDto.getMarketPrice() * PERCENTAGE_FOR_OBJECT_HIGH_REFERENCE_MIDDLE) / ONE_HUNDRED_PERCENT));
                 }
                 if(objectResponseCurrentFloor == 1 && referenceObjectCurrentFloor == 1){
-                    averageMarketPrice.set(averageMarketPrice.get() + requestReferenceObjectDto.getMarketPrice());
+                    averageMarketPrice.set(averageMarketPrice.get() + objectDto.getMarketPrice());
                 }
                 if((objectResponseCurrentFloor > 1 && objectResponseCurrentFloor < objectResponseFloors) && (referenceObjectCurrentFloor > 1 && referenceObjectCurrentFloor < referenceObjectFloors)){
-                    averageMarketPrice.set(averageMarketPrice.get() + requestReferenceObjectDto.getMarketPrice());
+                    averageMarketPrice.set(averageMarketPrice.get() + objectDto.getMarketPrice());
                 }
                 if(objectResponseCurrentFloor.equals(objectResponseFloors) && referenceObjectCurrentFloor.equals(referenceObjectFloors)){
-                    averageMarketPrice.set(averageMarketPrice.get() + requestReferenceObjectDto.getMarketPrice());
+                    averageMarketPrice.set(averageMarketPrice.get() + objectDto.getMarketPrice());
                 }
             });
-            objectResponseDto.setMarketPrice(averageMarketPrice.get() / counter.get());
+            objectDto.setMarketPrice((int) (averageMarketPrice.get() / counter.get()));
         });
     }
 }
