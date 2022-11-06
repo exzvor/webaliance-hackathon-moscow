@@ -138,6 +138,7 @@ import { DOMParser } from 'xmldom';
             title: node.querySelector('[itemprop="name"]').textContent, 
             price: Number(node.querySelector('[itemprop="price"]').getAttribute('content')),
             url: node.querySelector('[itemprop="url"]').getAttribute('href'),
+            adress: node.querySelector('[class^="geo-address"]').textContent,
             priceMeter: Number((node.querySelector('[class^="price-noaccent"]').textContent).replace(/\D/g, ''))
             }
         });
